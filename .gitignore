@@ -31,6 +31,5 @@ jsconfig.json
 package-lock.json
 package.json
 vite.config.js
-/index.html
 /online.iml
 /.vscode/
