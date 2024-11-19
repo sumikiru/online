@@ -1,0 +1,14 @@
+dist
+.idea
+.vscode
+node_modules
+.eslintignore
+.prettierignore
+.gitattributes
+.gitignore
+
+jsconfig.json
+online.iml
+package.json
+package-lock.json
+vite.config.js
