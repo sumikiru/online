@@ -21,6 +21,10 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/administrator',
+    component: () => import('@/views/Administrator/Administrator.vue'), // 新增的路由
+  },
 ];
 
 const router = createRouter({
