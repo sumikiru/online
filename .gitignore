@@ -36,3 +36,5 @@ vite.config.js~
 记录.md
 src/components/Test.vue~
 src/components/Test.vue
+/springboot/target/
+/files/
