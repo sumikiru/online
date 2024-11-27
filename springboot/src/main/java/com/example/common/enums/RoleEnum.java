@@ -6,5 +6,5 @@ public enum RoleEnum {
     // 教师
     TEACHER,
     // 学生
-    STUDENT
+    STUDENT,
 }

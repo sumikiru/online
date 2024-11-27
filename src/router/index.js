@@ -14,6 +14,7 @@ const router = createRouter({
         { path: 'person', meta: { name: '个人资料' }, component: () => import('@/views/manager/Person.vue'), },
         { path: 'password', meta: { name: '修改密码' }, component: () => import('@/views/manager/Password.vue'), },
         { path: 'teacher', meta: { name: '教师信息' }, component: () => import('@/views/manager/Teacher.vue'), },
+        { path: 'student', meta: { name: '学生信息' }, component: () => import('@/views/manager/Student.vue'), },
       ]
     },
     {
