@@ -1,8 +1,8 @@
 package com.example.controller;
 
 import com.example.common.Result;
-import com.example.entity.Admin;
-import com.example.service.AdminService;
+import com.example.entity.Teacher;
+import com.example.service.TeacherService;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
@@ -10,21 +10,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 管理员前端请求接口
+ * 教师信息前端请求接口
  */
 @RestController
-@RequestMapping("/admin")
-public class AdminController {
+@RequestMapping("/teacher")
+public class TeacherController {
 
     @Resource
-    private AdminService adminService;
+    private TeacherService teacherService;
 
     /**
      * 新增
      */
     @PostMapping("/add")
-    public Result add(@RequestBody Admin admin) {
-        adminService.add(admin);
+    public Result add(@RequestBody Teacher teacher) {
+        teacherService.add(teacher);
         return Result.success();
     }
 
@@ -32,8 +32,8 @@ public class AdminController {
      * 修改
      */
     @PutMapping("/update")
-    public Result update(@RequestBody Admin admin) {
-        adminService.updateById(admin);
+    public Result update(@RequestBody Teacher teacher) {
+        teacherService.updateById(teacher);
         return Result.success();
     }
 
@@ -42,7 +42,7 @@ public class AdminController {
      */
     @DeleteMapping("/delete/{id}")
     public Result delete(@PathVariable Integer id) {
-        adminService.deleteById(id);
+        teacherService.deleteById(id);
         return Result.success();
     }
 
@@ -51,7 +51,7 @@ public class AdminController {
      */
     @DeleteMapping("/delete/batch")
     public Result delete(@RequestBody List<Integer> ids) {
-        adminService.deleteBatch(ids);
+        teacherService.deleteBatch(ids);
         return Result.success();
     }
 
@@ -60,16 +60,16 @@ public class AdminController {
      */
     @GetMapping("/selectById/{id}")
     public Result selectById(@PathVariable Integer id) {
-        Admin admin = adminService.selectById(id);
-        return Result.success(admin);
+        Teacher teacher = teacherService.selectById(id);
+        return Result.success(teacher);
     }
 
     /**
      * 查询所有
      */
     @GetMapping("/selectAll")
-    public Result selectAll(Admin admin) {
-        List<Admin> list = adminService.selectAll(admin);
+    public Result selectAll(Teacher teacher) {
+        List<Teacher> list = teacherService.selectAll(teacher);
         return Result.success(list);
     }
 
@@ -77,10 +77,10 @@ public class AdminController {
      * 分页查询
      */
     @GetMapping("/selectPage")
-    public Result selectPage(Admin admin,
+    public Result selectPage(Teacher teacher,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<Admin> pageInfo = adminService.selectPage(admin, pageNum, pageSize);
+        PageInfo<Teacher> pageInfo = teacherService.selectPage(teacher, pageNum, pageSize);
         return Result.success(pageInfo);
     }
 

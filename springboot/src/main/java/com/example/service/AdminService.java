@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * 业务层方法
+ * 管理员业务层方法
  */
 @Service
 public class AdminService {
@@ -67,7 +67,6 @@ public class AdminService {
         List<Admin> list = adminMapper.selectAll(admin);
         return PageInfo.of(list);
     }
-
     /**
      * 登录
      */
