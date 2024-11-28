@@ -12,6 +12,7 @@ import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -67,6 +68,7 @@ public class TeacherService {
         List<Teacher> list = teacherMapper.selectAll(teacher);
         return PageInfo.of(list);
     }
+
     /**
      * 登录
      */
@@ -99,5 +101,11 @@ public class TeacherService {
         teacherMapper.updateById(dbTeacher);
     }
 
+    public void register(Account account) {
+        Teacher teacher = new Teacher();
+        BeanUtils.copyProperties(account, teacher);
+        add(teacher);
+    }
 }
+
 

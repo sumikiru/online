@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <div style="font-weight: bold; font-size: 24px; text-align: center; margin-bottom: 30px; color: #1450aa">欢 迎 登 录</div>
+      <div style="font-weight: bold; font-size: 24px; text-align: center; margin-bottom: 30px; color: #1450aa">欢迎登录在线考试系统</div>
       <el-form ref="formRef" :model="data.form" :rules="data.rules">
         <el-form-item prop="username">
           <el-input :prefix-icon="User" size="large" v-model="data.form.username" placeholder="请输入账号"></el-input>
@@ -10,8 +10,10 @@
           <el-input show-password :prefix-icon="Lock" size="large" v-model="data.form.password" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item prop="role">
-          <el-select size="large" v-model="data.form.role">
+          <el-select size="large" v-model="data.form.role" placeholder="请选择身份">
             <el-option value="ADMIN" label="管理员"></el-option>
+            <el-option value="TEACHER" label="教师"></el-option>
+            <el-option value="STUDENT" label="学生"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -33,13 +35,16 @@ import {ElMessage} from "element-plus";
 import router from "@/router/index.js";
 
 const data = reactive({
-  form: { role: 'ADMIN' },
+  form: {},
   rules: {
     username: [
       { required: true, message: '请输入账号', trigger: 'blur' }
     ],
     password: [
       { required: true, message: '请输入密码', trigger: 'blur' }
+    ],
+    role: [
+      { required: true, message: '请选择身份', trigger: 'change' }
     ]
   }
 })
@@ -54,7 +59,13 @@ const login = () => {
           ElMessage.success('登录成功')
           // 存储用户信息到浏览器的缓存
           localStorage.setItem('xm-user', JSON.stringify(res.data))
-          router.push('/manager/home')
+          setTimeout(() => {
+            if ('STUDENT' === res.data.role) {
+              location.href = '/front/home'
+            } else {
+              location.href = '/manager/home'
+            }
+          }, 500)
         } else {
           ElMessage.error(res.msg)
         }
