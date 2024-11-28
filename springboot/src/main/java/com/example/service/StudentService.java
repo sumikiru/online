@@ -12,6 +12,7 @@ import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -99,6 +100,11 @@ public class StudentService {
         }
         dbStudent.setPassword(account.getNewPassword());
         studentMapper.updateById(dbStudent);
+    }
+    public void register(Account account) {
+        Student student = new Student();
+        BeanUtils.copyProperties(account, student);
+        add(student);
     }
 
 }

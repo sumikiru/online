@@ -12,8 +12,14 @@
         <el-form-item prop="confirmPassword">
           <el-input show-password :prefix-icon="Lock" size="large" v-model="data.form.confirmPassword" placeholder="请确认密码"></el-input>
         </el-form-item>
+        <el-form-item prop="role">
+          <el-select size="large" v-model="data.form.role" placeholder="请选择身份">
+            <el-option value="TEACHER" label="教师"></el-option>
+            <el-option value="STUDENT" label="学生"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item>
-          <el-button size="large" type="primary" style="width: 100%" @click="login">注 册</el-button>
+          <el-button size="large" type="primary" style="width: 100%" @click="register">注 册</el-button>
         </el-form-item>
         <div style="text-align: right">
           已有账号？请 <a href="/login">登录</a>
@@ -49,6 +55,9 @@ const data = reactive({
     password: [
       { required: true, message: '请输入密码', trigger: 'blur' }
     ],
+    roles: [
+      { required: true, message: '请选择身份', trigger: 'blur' }
+      ],
     confirmPassword: [
         { validator: validatePass, trigger: 'blur' }
     ]
@@ -57,13 +66,15 @@ const data = reactive({
 
 const formRef = ref()
 
-const login = () => {
+const register = () => {
   formRef.value.validate(valid => {
     if (valid) { // 表示表单校验通过
       request.post('/register', data.form).then(res => {
         if (res.code === '200') {
           ElMessage.success('注册成功')
-          router.push('/login')
+          setTimeout(() => {
+            router.push('/login')
+          }, 500)
         } else {
           ElMessage.error(res.msg)
         }
