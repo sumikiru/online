@@ -14,7 +14,18 @@
           </el-timeline-item>
         </el-timeline>
       </div>
-      <div style="flex: 50%"></div>
+      <div class="card" style="flex: 50%; height: 350px" >
+      <div style="font-weight: bold; font-size: 18px; padding: 10px 0 30px 10px">考试安排</div>
+      <el-timeline style="max-width: 600px">
+        <el-timeline-item
+          v-for="(item, index) in data.planData"
+          :key="index"
+          :timestamp="item.time"
+        >
+          {{ item.content }}
+        </el-timeline-item>
+      </el-timeline>
+    </div>
     </div>
   </div>
 </template>
@@ -34,10 +45,26 @@ const loadNotice = () => {
   request.get('/notice/selectAll').then(res => {
     if (res.code === '200') {
       data.noticeData = res.data
+      if (data.noticeData.length > 4) {
+        data.noticeData = data.noticeData.slice(0, 4)
+      }// 最多显示4条数据
+    } else {
+      ElMessage.error(res.msg)
+    }
+  })
+}
+const loadExamPlan = () => {
+  request.get('/examPlan/selectAll').then(res => {
+    if (res.code === '200') {
+      data.planData = res.data
+      if (data.planData.length > 4) {
+        data.planData = data.planData.slice(0, 4)
+      }// 最多显示4条数据
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
 loadNotice()
+loadExamPlan()
 </script>
