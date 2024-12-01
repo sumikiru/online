@@ -6,23 +6,41 @@
       <el-button type="warning" plain style="margin: 0 10px" @click="reset">重置</el-button>
     </div>
     <div class="card" style="margin-bottom: 5px">
-      <el-button type="primary" plain @click="handleAdd">新增</el-button>
+      <el-button v-if="data.user.role === 'TEACHER'" type="primary" plain @click="handleAdd">新增</el-button>
       <el-button type="danger" plain @click="delBatch">批量删除</el-button>
     </div>
 
     <div class="card" style="margin-bottom: 5px">
       <el-table stripe :data="data.tableData" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="name" label="题目名称" />
-        <el-table-column prop="courseName" label="课程名称" />
-        <el-table-column prop="teacherName" label="授课教师" />
-        <el-table-column prop="typeName" label="题型" />
-        <el-table-column prop="typeScore" label="分数" />
-        <el-table-column label="选项" />
+        <el-table-column prop="name" label="题目名称" show-overflow-tooltip />
+        <el-table-column prop="courseName" label="课程名称" show-overflow-tooltip />
+        <el-table-column prop="teacherName" label="授课教师" width="120" />
+        <el-table-column prop="typeName" label="题型" width="100">
+          <template v-slot="scope">
+            <el-tag v-if="scope.row.typeName === '单选题'" type="success">{{ scope.row.typeName }}</el-tag>
+            <el-tag v-if="scope.row.typeName === '多选题'" type="primary">{{ scope.row.typeName }}</el-tag>
+            <el-tag v-if="scope.row.typeName === '判断题'" type="warning">{{ scope.row.typeName }}</el-tag>
+            <el-tag v-if="scope.row.typeName === '填空题'" type="info">{{ scope.row.typeName }}</el-tag>
+            <el-tag v-if="scope.row.typeName === '简答题'" type="danger">{{ scope.row.typeName }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="typeScore" label="分数" width="80" />
+        <el-table-column label="选项">
+          <template v-slot="scope">
+            <span v-if="scope.row.typeName !== '单选题' && scope.row.typeName !== '多选题'">无</span>
+            <div v-else>
+              <div>A. {{ scope.row.optionA }}</div>
+              <div>B. {{ scope.row.optionB }}</div>
+              <div>C. {{ scope.row.optionC }}</div>
+              <div>D. {{ scope.row.optionD }}</div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="answer" label="答案" show-overflow-tooltip />
         <el-table-column label="操作" width="100" fixed="right">
           <template v-slot="scope">
-            <el-button type="primary" circle :icon="Edit" @click="handleEdit(scope.row)"></el-button>
+            <el-button v-if="data.user.role === 'TEACHER'" type="primary" circle :icon="Edit" @click="handleEdit(scope.row)"></el-button>
             <el-button type="danger" circle :icon="Delete" @click="del(scope.row.id)"></el-button>
           </template>
         </el-table-column>

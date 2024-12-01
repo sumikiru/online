@@ -1,6 +1,6 @@
 package com.example.service;
 
-import cn.hutool.core.date.DateUtil;
+import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.entity.Question;
 import com.example.mapper.QuestionMapper;
@@ -50,6 +50,10 @@ public class QuestionService {
     }
 
     public PageInfo<Question> selectPage(Question question, Integer pageNum, Integer pageSize) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if (RoleEnum.TEACHER.name().equals(currentUser.getRole())){
+            question.setTeacherId(currentUser.getId());
+        }
         PageHelper.startPage(pageNum, pageSize);
         List<Question> list = questionMapper.selectAll(question);
         return PageInfo.of(list);
