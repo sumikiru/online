@@ -1,9 +1,8 @@
-//系统首页
 <template>
   <div class="manager-container">
     <div class="manager-header">
       <div class="manager-header-left">
-        <img src="@/assets/imgs/logo.png" alt="">
+        <img src="@/assets/imgs/logo.png" alt="" />
         <div class="title">在线考试系统管理后台</div>
       </div>
       <div class="manager-header-center">
@@ -15,8 +14,9 @@
       <div class="manager-header-right">
         <el-dropdown style="cursor: pointer">
           <div style="padding-right: 20px; display: flex; align-items: center">
-            <img style="width: 40px; height: 40px; border-radius: 50%;" :src="data.user.avatar" alt="">
-            <span style="margin-left: 5px; color: white">{{ data.user.name }}</span><el-icon color="#fff"><arrow-down /></el-icon>
+            <img style="width: 40px; height: 40px; border-radius: 50%" :src="data.user.avatar" alt="" />
+            <span style="margin-left: 5px; color: white">{{ data.user.name }}</span
+            ><el-icon color="#fff"><arrow-down /></el-icon>
           </div>
           <template #dropdown>
             <el-dropdown-menu>
@@ -31,10 +31,7 @@
     <!-- 下面部分开始 -->
     <div style="display: flex">
       <div class="manager-main-left">
-        <el-menu :default-active="router.currentRoute.value.path"
-                 :default-openeds="['1', '2']"
-                 router
-        >
+        <el-menu :default-active="router.currentRoute.value.path" :default-openeds="['1', '2']" router>
           <el-menu-item index="/manager/home">
             <el-icon><HomeFilled /></el-icon>
             <span>系统首页</span>
@@ -45,10 +42,12 @@
               <span>信息管理</span>
             </template>
             <el-menu-item index="/manager/notice">系统公告</el-menu-item>
-            <el-menu-item index="/manager/examPlan">考试安排</el-menu-item>
-            <el-menu-item index="/manager/questionType">题型信息</el-menu-item>
+            <el-menu-item v-if="data.user.role === 'ADMIN'" index="/manager/notice">系统公告</el-menu-item>
+            <el-menu-item v-if="data.user.role === 'ADMIN'" index="/manager/examPlan">考试安排</el-menu-item>
+            <el-menu-item v-if="data.user.role === 'ADMIN'" index="/manager/questionType">题型信息</el-menu-item>
+            <el-menu-item v-if="data.user.role === 'ADMIN'" index="/manager/course">课程信息</el-menu-item>
           </el-sub-menu>
-          <el-sub-menu index="2">
+          <el-sub-menu index="2" v-if="data.user.role === 'ADMIN'">
             <template #title>
               <el-icon><Menu /></el-icon>
               <span>用户管理</span>
@@ -64,35 +63,33 @@
       </div>
     </div>
     <!-- 下面部分结束 -->
-
-
   </div>
 </template>
 
 <script setup>
-import { reactive } from "vue";
-import router from "@/router/index.js";
-import {ElMessage} from "element-plus";
+import { reactive } from 'vue';
+import router from '@/router/index.js';
+import { ElMessage } from 'element-plus';
 
 const data = reactive({
-  user: JSON.parse(localStorage.getItem('xm-user') || '{}')
-})
+  user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
+});
 
 const logout = () => {
-  localStorage.removeItem('xm-user')
-  router.push('/login')
-}
+  localStorage.removeItem('xm-user');
+  router.push('/login');
+};
 
 const updateUser = () => {
-  data.user =  JSON.parse(localStorage.getItem('xm-user') || '{}')
-}
+  data.user = JSON.parse(localStorage.getItem('xm-user') || '{}');
+};
 
 if (!data.user.id) {
-  logout()
-  ElMessage.error('请登录！')
+  logout();
+  ElMessage.error('请登录！');
 }
 </script>
 
 <style scoped>
-@import "@/assets/css/manager.css";
+@import '@/assets/css/manager.css';
 </style>
