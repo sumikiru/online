@@ -45,7 +45,8 @@
             <el-menu-item v-if="data.user.role === 'ADMIN'" index="/manager/notice">系统公告</el-menu-item>
             <el-menu-item v-if="data.user.role === 'ADMIN'" index="/manager/examPlan">考试安排</el-menu-item>
             <el-menu-item v-if="data.user.role === 'ADMIN'" index="/manager/questionType">题型信息</el-menu-item>
-            <el-menu-item v-if="data.user.role === 'ADMIN'" index="/manager/course">课程信息</el-menu-item>
+            <el-menu-item index="/manager/course">课程信息</el-menu-item>
+            <el-menu-item index="/manager/question">题库信息</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="2" v-if="data.user.role === 'ADMIN'">
             <template #title>
