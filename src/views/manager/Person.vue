@@ -2,12 +2,7 @@
   <div style="width: 50%" class="card">
     <el-form ref="user" :model="data.user" label-width="70px" style="padding: 20px">
       <el-form-item prop="avatar" label="头像">
-        <el-upload
-            :action="baseUrl + '/files/upload'"
-            :on-success="handleFileUpload"
-            :show-file-list="false"
-            class="avatar-uploader"
-        >
+        <el-upload :action="baseUrl + '/files/upload'" :on-success="handleFileUpload" :show-file-list="false" class="avatar-uploader">
           <img v-if="data.user.avatar" :src="data.user.avatar" class="avatar" />
           <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
         </el-upload>
@@ -32,34 +27,45 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
-import request from "@/utils/request.js";
-import {ElMessage} from "element-plus";
+import { reactive } from 'vue';
+import request from '@/utils/request.js';
+import { ElMessage } from 'element-plus';
 
-const baseUrl = import.meta.env.VITE_BASE_URL
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const data = reactive({
-  user: JSON.parse(localStorage.getItem('xm-user') || '{}')
-})
+  user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
+});
 
 const handleFileUpload = (res) => {
-  data.user.avatar = res.data
-}
+  data.user.avatar = res.data;
+};
 
-const emit = defineEmits(['updateUser'])
+const emit = defineEmits(['updateUser']);
 const update = () => {
   if (data.user.role === 'ADMIN') {
-    request.put('/admin/update', data.user).then(res => {
+    request.put('/admin/update', data.user).then((res) => {
       if (res.code === '200') {
-        ElMessage.success('保存成功')
-        localStorage.setItem('xm-user', JSON.stringify(data.user))
-        emit('updateUser')
+        ElMessage.success('保存成功');
+        localStorage.setItem('xm-user', JSON.stringify(data.user));
+        emit('updateUser');
       } else {
-        ElMessage.error(res.msg)
+        ElMessage.error(res.msg);
       }
-    })
+    });
   }
-}
+  if (data.user.role === 'TEACHER') {
+    request.put('/teacher/update', data.user).then((res) => {
+      if (res.code === '200') {
+        ElMessage.success('保存成功');
+        localStorage.setItem('xm-user', JSON.stringify(data.user));
+        emit('updateUser');
+      } else {
+        ElMessage.error(res.msg);
+      }
+    });
+  }
+};
 </script>
 
 <style>
