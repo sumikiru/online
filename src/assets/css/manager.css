@@ -62,7 +62,7 @@
     outline: none;
 }
 
-/deep/.el-sub-menu__title {
+:deep(.el-sub-menu__title) {
     color: #ccc !important;
     height: 50px;
     line-height: 50px;
@@ -94,10 +94,10 @@
     color: #fff;
 }
 
-/deep/.el-breadcrumb__inner {
+:deep(.el-breadcrumb__inner) {
     color: #ccc !important;
 }
 
-/deep/.manager-header-right span {
+:deep(.manager-header-right span) {
     color: #cccccc;
 }
