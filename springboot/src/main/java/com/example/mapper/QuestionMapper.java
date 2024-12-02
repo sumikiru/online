@@ -1,6 +1,7 @@
 package com.example.mapper;
 
 import com.example.entity.Question;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface QuestionMapper {
 
     List<Question> selectAll(Question question);
 
+    @Select("select * from question where course_id = #{course_id} and type_id = #{type_id}")
+    List<Question> selectByCourseIdAndTypeId(@Param("courseId") Integer courseId, @Param("typeId") Integer typeId);
 }

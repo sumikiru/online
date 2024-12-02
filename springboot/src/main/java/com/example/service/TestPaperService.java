@@ -6,8 +6,10 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
+import com.example.entity.Question;
 import com.example.entity.TestPaper;
 import com.example.exception.CustomException;
+import com.example.mapper.QuestionMapper;
 import com.example.mapper.TestPaperMapper;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
@@ -17,7 +19,11 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 试卷信息业务层方法
@@ -27,6 +33,8 @@ public class TestPaperService {
 
     @Resource
     private TestPaperMapper testPaperMapper;
+    @Resource
+    private QuestionMapper questionMapper;
 
     public void add(TestPaper testPaper) throws ParseException {
         // 先要检验前台传过来的数据
@@ -38,7 +46,29 @@ public class TestPaperService {
             List<Integer> idList = testPaper.getIdList();
             testPaper.setQuestionIds(JSONUtil.toJsonStr(idList));
         }
+        // 自动组卷
+        else if (testPaper.getType().equals("自动组卷")) {
+            List<Integer> list = new ArrayList<>();
+            // 自动选取每个题型的题目
+            randomQuestionIds(testPaper, testPaper.getChoiceNum(), list, 1, "单选题");
+            randomQuestionIds(testPaper, testPaper.getMultiChoiceNum(), list, 2, "多选题");
+            randomQuestionIds(testPaper, testPaper.getCheckNum(), list, 3, "判断题");
+            randomQuestionIds(testPaper, testPaper.getFillInNum(), list, 4, "填空题");
+            randomQuestionIds(testPaper, testPaper.getAnswerNum(), list, 5, "简答题");
+
+            testPaper.setQuestionIds(JSONUtil.toJsonStr(list));
+        }
         testPaperMapper.insert(testPaper);
+    }
+
+    private void randomQuestionIds(TestPaper testPaper, Integer choiceNum, List<Integer> list, Integer typeId, String typeName) {
+        List<Question> choiceList = questionMapper.selectByCourseIdAndTypeId(testPaper.getCourseId(), typeId);
+        if (choiceList.size() < choiceNum){
+            throw new CustomException("-1", "题库中" + typeName + "数量不足，请减少出题的" + typeName + "数量或者增加题库中的" + typeName + "数量");
+        }
+        Collections.shuffle(choiceList);    //打乱
+        List<Integer> questions = choiceList.subList(0, choiceNum).stream().map(Question::getId).toList();
+        list.addAll(questions);
     }
 
     public void check(TestPaper testPaper) throws ParseException {
@@ -64,6 +94,24 @@ public class TestPaperService {
             }
         }
         //自动组卷校验
+        if (testPaper.getType().equals("自动组卷")) {
+            if (ObjectUtil.isEmpty(testPaper.getChoiceNum())
+                    || ObjectUtil.isEmpty(testPaper.getMultiChoiceNum())
+                    || ObjectUtil.isEmpty(testPaper.getFillInNum())
+                    || ObjectUtil.isEmpty(testPaper.getCheckNum())
+                    || ObjectUtil.isEmpty(testPaper.getAnswerNum())
+            ){
+                throw new CustomException("-1", "请填写题型的数量，如果不需要某个题型，请输入0");
+            }
+            if (testPaper.getChoiceNum() < 0
+                    || testPaper.getMultiChoiceNum() < 0
+                    || testPaper.getFillInNum() < 0
+                    || testPaper.getCheckNum() < 0
+                    || testPaper.getAnswerNum() < 0
+            ) {
+                throw new CustomException("-1", "题型的数量不能小于0");
+            }
+        }
     }
 
     public void updateById(TestPaper testPaper) {

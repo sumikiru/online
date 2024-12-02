@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ public class TestPaperController {
      * 新增
      */
     @PostMapping("/add")
-    public Result add(@RequestBody TestPaper testPaper) {
+    public Result add(@RequestBody TestPaper testPaper) throws ParseException {
         testPaperService.add(testPaper);
         return Result.success();
     }
@@ -79,7 +80,7 @@ public class TestPaperController {
     @GetMapping("/selectPage")
     public Result selectPage(TestPaper testPaper,
                              @RequestParam(defaultValue = "1") Integer pageNum,
-                             @RequestParam(defaultValue = "10") Integer pageSize) {
+                             @RequestParam(defaultValue = "10") Integer pageSize) throws ParseException {
         PageInfo<TestPaper> pageInfo = testPaperService.selectPage(testPaper, pageNum, pageSize);
         return Result.success(pageInfo);
     }
