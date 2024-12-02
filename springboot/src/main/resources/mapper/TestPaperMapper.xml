@@ -4,9 +4,14 @@
 <mapper namespace="com.example.mapper.TestPaperMapper">
 
     <select id="selectAll" resultType="com.example.entity.TestPaper">
-        select * from `test_paper`
+        select test_paper.*, course.name as courseName, course.img as courseImg,
+               teacher.name as teacherName, teacher.avatar as teacherAvatar
+        from `test_paper`
+        left join course on test_paper.course_id = course.id
+        left join teacher on test_paper.teacher_id = teacher.id
         <where>
             <if test="name != null"> and test_paper.name like concat('%', #{name}, '%')</if>
+            <if test="teacherId != null"> and test_paper.teacher_id = #{teacherId}</if>
         </where>
     </select>
 

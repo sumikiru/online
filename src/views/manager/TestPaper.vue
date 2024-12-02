@@ -6,7 +6,7 @@
       <el-button type="warning" plain style="margin: 0 10px" @click="reset">重置</el-button>
     </div>
     <div class="card" style="margin-bottom: 5px">
-      <el-button type="primary" plain @click="handleAdd">新增</el-button>
+      <el-button v-if="data.user.role === 'TEACHER'" type="primary" plain @click="handleAdd">出卷</el-button>
       <el-button type="danger" plain @click="delBatch">批量删除</el-button>
     </div>
 
@@ -16,11 +16,24 @@
         <el-table-column prop="name" label="试卷名称" />
         <el-table-column prop="courseName" label="课程名称" />
         <el-table-column prop="teacherName" label="授课教师" />
-        <el-table-column prop="type" label="试卷类型" />
+        <el-table-column prop="type" label="试卷类型">
+          <template v-slot="scope">
+            <el-tag v-if="scope.row.type === '手动选题'" type="success">{{ scope.row.type }}</el-tag>
+            <el-tag v-if="scope.row.type === '自动组卷'" type="primary">{{ scope.row.type }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="start" label="开始时间" />
         <el-table-column prop="end" label="结束时间" />
-        <el-table-column prop="time" label="考试时长" />
-        <el-table-column prop="status" label="考试状态" />
+        <el-table-column prop="time" label="考试时长">
+          <template v-slot="scope"> {{ scope.row.time }} 分钟 </template>
+        </el-table-column>
+        <el-table-column prop="status" label="考试状态">
+          <template v-slot="scope">
+            <el-tag v-if="scope.row.status === '进行中'" type="primary">{{ scope.row.status }}</el-tag>
+            <el-tag v-if="scope.row.status === '未开始'" type="warning">{{ scope.row.status }}</el-tag>
+            <el-tag v-if="scope.row.status === '已结束'" type="danger">{{ scope.row.status }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="100" fixed="right">
           <template v-slot="scope">
             <el-button type="danger" circle :icon="Delete" @click="del(scope.row.id)"></el-button>
@@ -35,7 +48,7 @@
     <el-dialog title="试卷信息" v-model="data.formVisible" width="40%" destroy-on-close>
       <el-form ref="form" :model="data.form" label-width="70px" style="padding: 20px">
         <el-form-item prop="courseId" label="选择课程">
-          <el-select v-model="data.form.courseId" placeholder="请选择课程">
+          <el-select v-model="data.form.courseId" placeholder="请选择课程" @change="loadQuestion">
             <el-option v-for="item in data.courseData" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -60,7 +73,7 @@
 
         <el-form-item prop="idList" label="选择题目" v-if="data.form.type === '手动选题'">
           <el-select v-model="data.form.idList" multiple placeholder="请选择题目" style="width: 100%">
-            <el-option v-for="item in data.questionData" :key="item.id" :label="item.name" :value="item.id" />
+            <el-option v-for="item in data.questionData" :key="item.id" :label="item.name + '（' + item.typeName + '）'" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item prop="choiceNum" label="单选个数" v-if="data.form.type === '自动组卷'">
@@ -96,6 +109,7 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 import { Delete, Edit } from '@element-plus/icons-vue';
 
 const data = reactive({
+  user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
   formVisible: false,
   form: {},
   tableData: [],
@@ -107,6 +121,38 @@ const data = reactive({
   courseData: [],
   questionData: [],
 });
+
+const loadCourse = () => {
+  request
+    .get('/course/selectAll', {
+      params: {
+        teacherId: data.user.id,
+      },
+    })
+    .then((res) => {
+      if (res.code === '200') {
+        data.courseData = res.data;
+      } else {
+        ElMessage.error(res.msg);
+      }
+    });
+};
+
+const loadQuestion = () => {
+  request
+    .get('/question/selectAll', {
+      params: {
+        courseId: courseId,
+      },
+    })
+    .then((res) => {
+      if (res.code === '200') {
+        data.questionData = res.data;
+      } else {
+        ElMessage.error(res.msg);
+      }
+    });
+};
 
 const load = () => {
   request
@@ -204,4 +250,5 @@ const reset = () => {
 };
 
 load();
+loadCourse();
 </script>

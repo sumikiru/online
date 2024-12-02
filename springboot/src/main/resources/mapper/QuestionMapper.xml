@@ -14,6 +14,7 @@
         <where>
             <if test="name != null"> and question.name like concat('%', #{name}, '%')</if>
             <if test="teacherId != null"> and question.teacher_id = #{teacherId}</if>
+            <if test="courseId != null"> and question.course_id = #{courseId}</if>
         </where>
     </select>
 

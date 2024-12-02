@@ -133,11 +133,11 @@ public class TestPaper {
         this.teacherAvatar = teacherAvatar;
     }
 
-    public List<Integer> getIds() {
+    public List<Integer> getIdList() {
         return idList;
     }
 
-    public void setIds(List<Integer> idList) {
+    public void setIdList(List<Integer> idList) {
         this.idList = idList;
     }
 
