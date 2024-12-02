@@ -151,6 +151,7 @@ public class TestPaperService {
 
         }
         testPaper.setQuestions(questions);
+        testPaper.setMaxTime(testPaper.getTime()*60);
         return testPaper;
     }
 

@@ -34,6 +34,7 @@ public class TestPaper {
         return questions;
     }
 
+    private Integer maxTime;
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
@@ -197,4 +198,11 @@ public class TestPaper {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public Integer getMaxTime() {
+        return maxTime;
+    }
+
+    public void setMaxTime(int maxTime) {this.maxTime = maxTime;}
+
 }
