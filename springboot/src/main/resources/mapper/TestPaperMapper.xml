@@ -12,6 +12,7 @@
         <where>
             <if test="name != null"> and test_paper.name like concat('%', #{name}, '%')</if>
             <if test="teacherId != null"> and test_paper.teacher_id = #{teacherId}</if>
+            <if test="courseName != null"> and course.name like concat('%', #{courseName}, '%')</if>
         </where>
     </select>
 

@@ -1,14 +1,17 @@
 <template>
   <div>
-    <div class="front-notice"><el-icon><Bell /></el-icon>公告：{{ data.top }}</div>
+    <div class="front-notice">
+      <el-icon><Bell /></el-icon>公告：{{ data.top }}
+    </div>
     <div class="front-header">
       <div class="front-header-left">
-        <img src="@/assets/imgs/logo.png" alt="">
+        <img src="@/assets/imgs/logo.png" alt="" />
         <div class="title">项目前台</div>
       </div>
       <div class="front-header-center">
         <el-menu :default-active="router.currentRoute.value.path" router mode="horizontal">
           <el-menu-item index="/front/home">首页</el-menu-item>
+          <el-menu-item index="/front/exam">在线考试</el-menu-item>
           <el-menu-item index="/front/person">个人中心</el-menu-item>
         </el-menu>
       </div>
@@ -20,8 +23,9 @@
         <div v-else>
           <el-dropdown style="cursor: pointer; height: 60px">
             <div style="display: flex; align-items: center">
-              <img style="width: 40px; height: 40px; border-radius: 50%;" :src="data.user.avatar" alt="">
-              <span style="margin-left: 5px;">{{ data.user.name }}</span><el-icon><arrow-down /></el-icon>
+              <img style="width: 40px; height: 40px; border-radius: 50%" :src="data.user.avatar" alt="" />
+              <span style="margin-left: 5px">{{ data.user.name }}</span
+              ><el-icon><arrow-down /></el-icon>
             </div>
             <template #dropdown>
               <el-dropdown-menu>
@@ -39,44 +43,44 @@
 </template>
 
 <script setup>
-  import router from "@/router/index.js";
-  import { reactive } from "vue";
-  import request from "@/utils/request.js";
+import router from '@/router/index.js';
+import { reactive } from 'vue';
+import request from '@/utils/request.js';
 
-  const data = reactive({
-    user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
-    top: '',
-    noticeData: []
-  })
+const data = reactive({
+  user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
+  top: '',
+  noticeData: [],
+});
 
-  const logout = () => {
-    localStorage.removeItem('xm-user')
-    router.push('/login')
-  }
+const logout = () => {
+  localStorage.removeItem('xm-user');
+  router.push('/login');
+};
 
-  const updateUser = () => {
-    data.user =  JSON.parse(localStorage.getItem('xm-user') || '{}')
-  }
+const updateUser = () => {
+  data.user = JSON.parse(localStorage.getItem('xm-user') || '{}');
+};
 
-  const loadNotice = () => {
-    request.get('/notice/selectAll').then(res => {
-      data.noticeData = res.data
-      let i = 0
-      if (data.noticeData && data.noticeData.length) {
-        data.top = data.noticeData[0].content
-        setInterval(() => {
-          data.top = data.noticeData[i].content
-          i++
-          if (i === data.noticeData.length) {
-            i = 0
-          }
-        }, 2500)
-      }
-    })
-  }
-  loadNotice()
+const loadNotice = () => {
+  request.get('/notice/selectAll').then((res) => {
+    data.noticeData = res.data;
+    let i = 0;
+    if (data.noticeData && data.noticeData.length) {
+      data.top = data.noticeData[0].content;
+      setInterval(() => {
+        data.top = data.noticeData[i].content;
+        i++;
+        if (i === data.noticeData.length) {
+          i = 0;
+        }
+      }, 2500);
+    }
+  });
+};
+loadNotice();
 </script>
 
 <style scoped>
-@import "@/assets/css/front.css";
+@import '@/assets/css/front.css';
 </style>
