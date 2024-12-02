@@ -5,11 +5,11 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.example.common.enums.RoleEnum;
-import com.example.entity.Account;
-import com.example.entity.Question;
-import com.example.entity.TestPaper;
+import com.example.entity.*;
 import com.example.exception.CustomException;
+import com.example.mapper.CourseMapper;
 import com.example.mapper.QuestionMapper;
+import com.example.mapper.TeacherMapper;
 import com.example.mapper.TestPaperMapper;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
@@ -35,6 +35,10 @@ public class TestPaperService {
     private TestPaperMapper testPaperMapper;
     @Resource
     private QuestionMapper questionMapper;
+    @Resource
+    private CourseMapper courseMapper;
+    @Resource
+    private TeacherMapper teacherMapper;
 
     public void add(TestPaper testPaper) throws ParseException {
         // 先要检验前台传过来的数据
@@ -129,7 +133,25 @@ public class TestPaperService {
     }
 
     public TestPaper selectById(Integer id) {
-        return testPaperMapper.selectById(id);
+        TestPaper testPaper=testPaperMapper.selectById(id);
+        Course course = courseMapper.selectById(testPaper.getCourseId());
+        if (ObjectUtil.isNotEmpty(course)) {
+            testPaper.setCourseName(course.getName());
+        }
+        Teacher teacher = teacherMapper.selectById(testPaper.getTeacherId());
+        if (ObjectUtil.isNotEmpty(teacher)) {
+            testPaper.setTeacherName(teacher.getUsername());
+        }
+        String questionIds = testPaper.getQuestionIds();
+        List<Integer> idList = JSONUtil.toList(questionIds, Integer.class);
+        List<Question> questions = new ArrayList<>();
+        for(Integer questionId : idList){
+            Question question = questionMapper.selectById(questionId);
+            questions.add(question);
+
+        }
+        testPaper.setQuestions(questions);
+        return testPaper;
     }
 
     public List<TestPaper> selectAll(TestPaper testPaper) {

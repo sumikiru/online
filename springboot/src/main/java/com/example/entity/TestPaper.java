@@ -28,6 +28,15 @@ public class TestPaper {
     private Integer fillInNum; // 接收前台那边自动组卷填写的填空题的数量
     private Integer checkNum; // 接收前台那边自动组卷填写的判断题的数量
     private Integer answerNum; // 接收前台那边自动组卷填写的简答题的数量
+    private List<Question> questions;
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
 
     public Integer getId() {
         return id;
