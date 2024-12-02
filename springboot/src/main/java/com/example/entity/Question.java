@@ -19,6 +19,7 @@ public class Question {
     private String typeName;
     private Integer typeScore;
     private List<String> checkList = new ArrayList<>();
+    private String newAnswer;
 
     public Integer getId() {
         return id;
@@ -138,5 +139,13 @@ public class Question {
 
     public void setCheckList(List<String> checkList) {
         this.checkList = checkList;
+    }
+
+    public String getNewAnswer() {
+        return newAnswer;
+    }
+
+    public void setNewAnswer(String newAnswer) {
+        this.newAnswer = newAnswer;
     }
 }

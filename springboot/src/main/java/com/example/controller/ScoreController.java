@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.common.Result;
 import com.example.entity.Score;
+import com.example.entity.TestPaper;
 import com.example.service.ScoreService;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
@@ -23,8 +24,8 @@ public class ScoreController {
      * 新增
      */
     @PostMapping("/add")
-    public Result add(@RequestBody Score score) {
-        scoreService.add(score);
+    public Result add(@RequestBody TestPaper testPaper) {
+        scoreService.add(testPaper);
         return Result.success();
     }
 

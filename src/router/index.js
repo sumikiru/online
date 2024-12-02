@@ -30,6 +30,7 @@ const router = createRouter({
         { path: 'person', component: () => import('@/views/front/Person.vue') },
         { path: 'exam', component: () => import('@/views/front/Exam.vue') },
         { path: 'testPaper', component: () => import('@/views/front/TestPaper.vue') },
+        { path: 'score', component: () => import('@/views/front/score.vue') },
       ],
     },
     { path: '/login', component: () => import('@/views/Login.vue') },

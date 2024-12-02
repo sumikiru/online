@@ -11,7 +11,7 @@ public class Score {
 
     private  Integer studentId;
 
-    private  Integer parentId;
+    private  Integer paperId;
 
     private  Integer score;
 
@@ -59,12 +59,12 @@ public class Score {
         this.studentId = studentId;
     }
 
-    public Integer getParentId() {
-        return parentId;
+    public Integer getPaperId() {
+        return paperId;
     }
 
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
+    public void setPaperId(Integer paperId) {
+        this.paperId = paperId;
     }
 
     public Integer getScore() {
@@ -90,4 +90,6 @@ public class Score {
     public void setAnswer(String answer) {
         this.answer = answer;
     }
+
+
 }

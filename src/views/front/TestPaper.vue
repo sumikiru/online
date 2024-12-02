@@ -6,8 +6,8 @@
       <span style="margin: 0 30px">授课教师：{{ data.testPaperData.teacherName }}</span>
       <span>考试时间：{{ data.testPaperData.time }} 分钟</span>
     </div>
-    <div style="margin-top: 10px;text-align: center;color:red">
-    考试倒计时：{{ data.hour }}时：{{data.minutes}}分：{{data.seconds}秒
+    <div> style="margin-top: 10px;text-align: center;color:red">
+    考试倒计时：{{ data.hour }} 时：{{data.minutes }} 分：{{ data.seconds }} 秒
     </div>
     <div style="margin-top: 50px">
       <div v-for="item in data.testPaperData.questions" style="margin-bottom: 20px">
@@ -98,6 +98,16 @@ const loadTestPaper = () => {
 const  submitPaper = () => {
   clearInterval(time)
 //提交试卷
+  request.post('/score/add', data.testPaperData).then(res => {
+    if (res.code === '200') {
+      ElMessage.success('提交成功')
+      setTimeout(() => {
+        location.href = '/front/score'
+      }, 500)
+    } else {
+      ElMessage.error(res.msg)
+    }
+  })
 }
 
 loadTestPaper();
