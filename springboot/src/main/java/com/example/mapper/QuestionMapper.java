@@ -14,11 +14,11 @@ public interface QuestionMapper {
 
     void deleteById(Integer id);
 
-    @Select("select question.*,question_type.score as typeScore from `question`left join question_type on question.type_id=question_type.id where id = #{id}")
+    @Select("select question.*,question_type.score as typeScore from `question` left join question_type on question.type_id=question_type.id where id = #{id}")
     Question selectById(Integer id);
 
     List<Question> selectAll(Question question);
 
-    @Select("select * from question where course_id = #{course_id} and type_id = #{type_id}")
+    @Select("select * from `question` where course_id = #{course_id} and type_id = #{type_id}")
     List<Question> selectByCourseIdAndTypeId(@Param("courseId") Integer courseId, @Param("typeId") Integer typeId);
 }

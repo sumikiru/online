@@ -7,7 +7,7 @@
     <div>
       <el-row :gutter="10">
         <el-col :span="6" v-for="item in data.examData" style="margin-bottom: 15px">
-          <div class="card" style="cursor: pointer" @click="navTo('/front/testPaper?id=' + item.id)" )>
+          <div class="card" style="cursor: pointer" @click="navTo('/front/testPaper?id=' + item.id)">
             <img :src="item.courseImg" alt="" style="width: 100%; height: 150px" />
             <div class="overflowShow" style="margin-top: 5px; font-size: 15px; color: #333333">{{ item.name }}</div>
             <div style="margin-top: 10px; display: flex; align-items: center">
@@ -70,7 +70,7 @@ const navTo = (url) => {
 };
 load();
 </script>
-<style scope>
+<style scoped>
 .overflowShow {
   white-space: nowrap;
   overflow: hidden;

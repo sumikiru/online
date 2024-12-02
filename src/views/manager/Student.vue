@@ -16,8 +16,13 @@
         <el-table-column prop="username" label="账号" />
         <el-table-column prop="avatar" label="头像">
           <template v-slot="scope">
-            <el-image style="width: 40px; height: 40px; border-radius: 50%; display: block" v-if="scope.row.avatar"
-                      :src="scope.row.avatar" :preview-src-list="[scope.row.avatar]" preview-teleported></el-image>
+            <el-image
+              style="width: 40px; height: 40px; border-radius: 50%; display: block"
+              v-if="scope.row.avatar"
+              :src="scope.row.avatar"
+              :preview-src-list="[scope.row.avatar]"
+              preview-teleported
+            ></el-image>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="姓名" />
@@ -26,8 +31,8 @@
         <el-table-column prop="email" label="邮箱" />
         <el-table-column label="操作" width="100" fixed="right">
           <template v-slot="scope">
-            <el-button type="primary" circle :icon="Edit" @click="handleEdit(scope.row)"></el-button>
-            <el-button type="danger" circle :icon="Delete" @click="del(scope.row.id)"></el-button>
+            <el-button type="primary" circle :icon="Edit" @click="handleEdit(scope.row)" />
+            <el-button type="danger" circle :icon="Delete" @click="del(scope.row.id)" />
           </template>
         </el-table-column>
       </el-table>
@@ -42,11 +47,7 @@
           <el-input v-model="data.form.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item prop="avatar" label="头像">
-          <el-upload
-            :action="baseUrl + '/files/upload'"
-            :on-success="handleFileUpload"
-            list-type="picture"
-          >
+          <el-upload :action="baseUrl + '/files/upload'" :on-success="handleFileUpload" list-type="picture">
             <el-button type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
@@ -71,13 +72,12 @@
 </template>
 
 <script setup>
+import { reactive } from 'vue';
+import request from '@/utils/request.js';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { Delete, Edit } from '@element-plus/icons-vue';
 
-import {reactive} from "vue";
-import request from "@/utils/request.js";
-import {ElMessage, ElMessageBox} from "element-plus";
-import {Delete, Edit} from "@element-plus/icons-vue";
-
-const baseUrl = import.meta.env.VITE_BASE_URL
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const data = reactive({
   formVisible: false,
@@ -87,101 +87,107 @@ const data = reactive({
   pageSize: 10,
   total: 0,
   name: null,
-  ids: []
-})
+  ids: [],
+});
 
 const load = () => {
-  request.get('/student/selectPage', {
-    params: {
-      pageNum: data.pageNum,
-      pageSize: data.pageSize,
-      name: data.name
-    }
-  }).then(res => {
-    if (res.code === '200') {
-      data.tableData = res.data?.list || []
-      data.total = res.data?.total
-    }
-  })
-}
+  request
+    .get('/student/selectPage', {
+      params: {
+        pageNum: data.pageNum,
+        pageSize: data.pageSize,
+        name: data.name,
+      },
+    })
+    .then((res) => {
+      if (res.code === '200') {
+        data.tableData = res.data?.list || [];
+        data.total = res.data?.total;
+      }
+    });
+};
 const handleAdd = () => {
-  data.form = {}
-  data.formVisible = true
-}
+  data.form = {};
+  data.formVisible = true;
+};
 const handleEdit = (row) => {
-  data.form = JSON.parse(JSON.stringify(row))
-  data.formVisible = true
-}
+  data.form = JSON.parse(JSON.stringify(row));
+  data.formVisible = true;
+};
 const add = () => {
-  request.post('/student/add', data.form).then(res => {
+  request.post('/student/add', data.form).then((res) => {
     if (res.code === '200') {
-      ElMessage.success('操作成功')
-      data.formVisible = false
-      load()
+      ElMessage.success('操作成功');
+      data.formVisible = false;
+      load();
     } else {
-      ElMessage.error(res.msg)
+      ElMessage.error(res.msg);
     }
-  })
-}
+  });
+};
 
 const update = () => {
-  request.put('/student/update', data.form).then(res => {
+  request.put('/student/update', data.form).then((res) => {
     if (res.code === '200') {
-      ElMessage.success('操作成功')
-      data.formVisible = false
-      load()
+      ElMessage.success('操作成功');
+      data.formVisible = false;
+      load();
     }
-  })
-}
+  });
+};
 
 const save = () => {
-  data.form.id ? update() : add()
-}
+  data.form.id ? update() : add();
+};
 
 const del = (id) => {
-  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' }).then(res => {
-    request.delete('/student/delete/' + id).then(res => {
-      if (res.code === '200') {
-        ElMessage.success("删除成功")
-        load()
-      } else {
-        ElMessage.error(res.msg)
-      }
+  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' })
+    .then((res) => {
+      request.delete('/student/delete/' + id).then((res) => {
+        if (res.code === '200') {
+          ElMessage.success('删除成功');
+          load();
+        } else {
+          ElMessage.error(res.msg);
+        }
+      });
     })
-  }).catch(err => {
-    console.error(err)
-  })
-}
+    .catch((err) => {
+      console.error(err);
+    });
+};
 const delBatch = () => {
   if (!data.ids.length) {
-    ElMessage.warning("请选择数据")
-    return
+    ElMessage.warning('请选择数据');
+    return;
   }
-  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' }).then(res => {
-    request.delete("/student/delete/batch", {data: data.ids}).then(res => {
-      if (res.code === '200') {
-        ElMessage.success('操作成功')
-        load()
-      } else {
-        ElMessage.error(res.msg)
-      }
+  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' })
+    .then((res) => {
+      request.delete('/student/delete/batch', { data: data.ids }).then((res) => {
+        if (res.code === '200') {
+          ElMessage.success('操作成功');
+          load();
+        } else {
+          ElMessage.error(res.msg);
+        }
+      });
     })
-  }).catch(err => {
-    console.error(err)
-  })
-}
+    .catch((err) => {
+      console.error(err);
+    });
+};
 const handleSelectionChange = (rows) => {
-  data.ids = rows.map(v => v.id)
-}
+  data.ids = rows.map((v) => v.id);
+};
 
 const handleFileUpload = (res) => {
-  data.form.avatar = res.data
-}
+  data.form.avatar = res.data;
+};
 
 const reset = () => {
-  data.name = null
-  load()
-}
+  data.name = null;
+  load();
+};
 
-load()
+load();
 </script>

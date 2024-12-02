@@ -18,7 +18,7 @@ public interface QuestionTypeMapper {
 
     List<QuestionType> selectAll(QuestionType questionType);
 
-    @Select("select * from question_type where name = #{name}")
+    @Select("select * from `question_type` where name = #{name}")
     List<QuestionType> selectByName(String name);
 }
 

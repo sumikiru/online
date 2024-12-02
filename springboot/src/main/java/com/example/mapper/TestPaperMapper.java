@@ -13,7 +13,7 @@ public interface TestPaperMapper {
 
     void deleteById(Integer id);
 
-    @Select("select * from `testPaper` where id = #{id}")
+    @Select("select * from `test_paper` where id = #{id}")
     TestPaper selectById(Integer id);
 
     List<TestPaper> selectAll(TestPaper testPaper);
