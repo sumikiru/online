@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="front-notice">
+    <div class="front-score">
       <el-icon><Bell /></el-icon>公告：{{ data.top }}
     </div>
     <div class="front-header">

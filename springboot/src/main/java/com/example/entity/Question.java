@@ -1,5 +1,8 @@
 package com.example.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Question {
     private Integer id;
     private String name;
@@ -15,6 +18,7 @@ public class Question {
     private String teacherName;
     private String typeName;
     private Integer typeScore;
+    private List<String> checkList = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -128,4 +132,11 @@ public class Question {
         this.typeScore = typeScore;
     }
 
+    public List<String> getCheckList() {
+        return checkList;
+    }
+
+    public void setCheckList(List<String> checkList) {
+        this.checkList = checkList;
+    }
 }
