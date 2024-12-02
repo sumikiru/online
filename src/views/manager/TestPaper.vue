@@ -138,7 +138,7 @@ const loadCourse = () => {
     });
 };
 
-const loadQuestion = () => {
+const loadQuestion = (courseId) => {
   request
     .get('/question/selectAll', {
       params: {
