@@ -67,7 +67,9 @@ const data = reactive({
 let time;
 
 const loadTestPaper = () => {
+  console.log(router.currentRoute.value.query);
   data.testPaperId = router.currentRoute.value.query.id;
+  console.log(data.testPaperId); //异常：总为undefined
   request.get('/testPaper/selectById/' + data.testPaperId).then((res) => {
     if (res.code === '200') {
       data.testPaperData = res.data;

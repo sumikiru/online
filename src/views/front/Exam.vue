@@ -74,10 +74,10 @@ const navTo = (item) => {
     ElMessage.warning('该考试已结束');
     return;
   }
-  request.get('testPaper/check/' + item.id).then((res) => {
+  request.get('/testPaper/check/' + item.id).then((res) => {
     console.log(item);
     if (res.code === '200') {
-      location.href = '/front/testPaper?id' + item.id;
+      location.href = '/front/testPaper?id=' + item.id;
     } else {
       ElMessage.error(res.msg);
     }
