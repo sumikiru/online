@@ -19,6 +19,12 @@ public class Score {
 
     private  String answer;
 
+    private String courseName;
+
+    private String teacherName;
+
+    private String studentName;
+
     public Integer getId() {
         return id;
     }
@@ -91,5 +97,27 @@ public class Score {
         this.answer = answer;
     }
 
+    public String getCourseName() {
+        return courseName;
+    }
 
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
 }

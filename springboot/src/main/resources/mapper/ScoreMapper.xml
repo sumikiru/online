@@ -4,9 +4,17 @@
 <mapper namespace="com.example.mapper.ScoreMapper">
 
     <select id="selectAll" resultType="com.example.entity.Score">
-        select * from `score`
+        select score.*, course.name as courseName, teacher.name as teacherName , student.name as studentName  from `score`
+        left join course on score.course_id = course.id
+        left join teacher on score.teacher_id = teacher.id
+        left join student on score.student_id = student.id
+        left join paper on score.paper_id = paper.id
+
         <where>
             <if test="name != null"> and name like concat('%', #{name}, '%')</if>
+            <if test="student != null"> and score.student_id = #{studentId}</if>
+            <if test="teacher != null"> and score.teacher_id = #{teacherId}</if>
+            <if test="paper != null"> and score.paper_id = #{paperId}</if>
         </where>
     </select>
 

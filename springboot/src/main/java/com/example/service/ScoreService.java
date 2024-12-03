@@ -2,6 +2,7 @@ package com.example.service;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
+import com.example.common.enums.RoleEnum;
 import com.example.entity.*;
 import com.example.mapper.ScoreMapper;
 import com.example.utils.TokenUtils;
@@ -74,6 +75,13 @@ public class ScoreService {
     }
 
     public PageInfo<Score> selectPage(Score score, Integer pageNum, Integer pageSize) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if (RoleEnum.STUDENT.name().equals(currentUser.getRole())) {
+            score.setStudentId(currentUser.getId());
+        }
+        if (RoleEnum.TEACHER.name().equals(currentUser.getRole())) {
+            score.setTeacherId(currentUser.getId());
+        }
         PageHelper.startPage(pageNum, pageSize);
         List<Score> list = scoreMapper.selectAll(score);
         return PageInfo.of(list);
