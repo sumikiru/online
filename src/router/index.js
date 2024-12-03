@@ -20,6 +20,7 @@ const router = createRouter({
         { path: 'course', meta: { name: '课程信息' }, component: () => import('@/views/manager/Course.vue') },
         { path: 'question', meta: { name: '题库信息' }, component: () => import('@/views/manager/Question.vue') },
         { path: 'testPaper', meta: { name: '试卷信息' }, component: () => import('@/views/manager/TestPaper.vue') },
+        { path: 'score', meta: { name: '成绩管理' }, component: () => import('@/views/manager/Score.vue') },
       ],
     },
     {
