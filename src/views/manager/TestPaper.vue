@@ -95,7 +95,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="data.formVisible = false">取 消</el-button>
-          <el-button type="primary" @click="save">确 定</el-button>
+          <el-button type="primary" @click="add">确 定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -106,7 +106,7 @@
 import { reactive } from 'vue';
 import request from '@/utils/request.js';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { Delete, Edit } from '@element-plus/icons-vue';
+import { Delete } from '@element-plus/icons-vue';
 
 const data = reactive({
   user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
@@ -174,10 +174,7 @@ const handleAdd = () => {
   data.form = {};
   data.formVisible = true;
 };
-const handleEdit = (row) => {
-  data.form = JSON.parse(JSON.stringify(row));
-  data.formVisible = true;
-};
+
 const add = () => {
   request.post('/testPaper/add', data.form).then((res) => {
     if (res.code === '200') {
@@ -198,10 +195,6 @@ const update = () => {
       load();
     }
   });
-};
-
-const save = () => {
-  data.form.id ? update() : add();
 };
 
 const del = (id) => {
