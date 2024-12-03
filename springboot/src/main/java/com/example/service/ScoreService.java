@@ -48,7 +48,8 @@ public class ScoreService {
         Score score = new Score();
         Account currentUser = TokenUtils.getCurrentUser();
         score.setStudentId(currentUser.getId());
-        score.setTeacherId(currentUser.getId());
+        score.setTeacherId(testPaper.getTeacherId());
+        score.setCourseId(testPaper.getCourseId());
         score.setName(testPaper.getName());
         score.setPaperId(testPaper.getId());
         score.setStatus("待阅卷");

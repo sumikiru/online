@@ -8,7 +8,6 @@
         left join course on score.course_id = course.id
         left join teacher on score.teacher_id = teacher.id
         left join student on score.student_id = student.id
-        left join paper on score.paper_id = paper.id
 
         <where>
             <if test="name != null"> and score.name like concat('%', #{name}, '%')</if>
