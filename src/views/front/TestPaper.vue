@@ -6,9 +6,7 @@
       <span style="margin: 0 30px">授课教师：{{ data.testPaperData.teacherName }}</span>
       <span>考试时间：{{ data.testPaperData.time }} 分钟</span>
     </div>
-    <div> style="margin-top: 10px;text-align: center;color:red">
-    考试倒计时：{{ data.hour }} 时：{{data.minutes }} 分：{{ data.seconds }} 秒
-    </div>
+    <div style="margin-top: 10px; text-align: center; color: red">考试倒计时：{{ data.hour }} 时：{{ data.minutes }} 分：{{ data.seconds }} 秒</div>
     <div style="margin-top: 50px">
       <div v-for="item in data.testPaperData.questions" style="margin-bottom: 20px">
         <div style="font-weight: bold; font-size: 16px; background-color: #ddf1ec; line-height: 30px; padding: 5px; margin-bottom: 10px">{{ item.name }}（{{ item.typeScore }} 分）</div>
@@ -58,57 +56,53 @@ import { reactive, onMounted } from 'vue';
 import request from '@/utils/request.js';
 import router from '@/router/index.js';
 import { ElMessage } from 'element-plus';
-import date from "async-validator/dist-types/validator/date.js";
 
 const data = reactive({
   testPaperId: router.currentRoute.value.query.id,
   testPaperData: {},
-  hour:0,
-  minutes:0,
-  seconds:0,
+  hour: 0,
+  minutes: 0,
+  seconds: 0,
 });
-let time
+let time;
 
 const loadTestPaper = () => {
   data.testPaperId = router.currentRoute.value.query.id;
   request.get('/testPaper/selectById/' + data.testPaperId).then((res) => {
     if (res.code === '200') {
       data.testPaperData = res.data;
-      time=setInterval(() =>{
-        let maxTime=data.testPaperData.maxTime
-        if (maxTime >= 0){
-          let remain = Math.floor(maxTime % 3600)
-          data.hour = Math.floor(maxTime / 3600)
-          data.minutes = Math.floor(remain / 60)
-          data.seconds = Math.floor(remain % 60)
-          maxTime--
-        }else {
-          ElMessage.error('时间到')
-          submitPaper()
+      time = setInterval(() => {
+        let maxTime = data.testPaperData.maxTime;
+        if (maxTime >= 0) {
+          let remain = Math.floor(maxTime % 3600);
+          data.hour = Math.floor(maxTime / 3600);
+          data.minutes = Math.floor(remain / 60);
+          data.seconds = Math.floor(remain % 60);
+          maxTime--;
+        } else {
+          ElMessage.error('时间到');
+          submitPaper();
         }
-
-
-      },1000)
-
+      }, 1000);
     } else {
       ElMessage.error(res.msg);
     }
   });
 };
-const  submitPaper = () => {
-  clearInterval(time)
-//提交试卷
-  request.post('/score/add', data.testPaperData).then(res => {
+const submitPaper = () => {
+  clearInterval(time);
+  //提交试卷
+  request.post('/score/add', data.testPaperData).then((res) => {
     if (res.code === '200') {
-      ElMessage.success('提交成功')
+      ElMessage.success('提交成功');
       setTimeout(() => {
-        location.href = '/front/score'
-      }, 500)
+        location.href = '/front/score';
+      }, 500);
     } else {
-      ElMessage.error(res.msg)
+      ElMessage.error(res.msg);
     }
-  })
-}
+  });
+};
 
 loadTestPaper();
 </script>
