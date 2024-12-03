@@ -75,7 +75,6 @@ const navTo = (item) => {
     return;
   }
   request.get('/testPaper/check/' + item.id).then((res) => {
-    console.log(item);
     if (res.code === '200') {
       location.href = '/front/testPaper?id=' + item.id;
     } else {

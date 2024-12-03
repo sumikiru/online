@@ -3,7 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', redirect: '/manager/home' },
+    //{ path: '/', redirect: '/manager/home' },错误，会导致退出登录时直接进入管理页
+    { path: '/', redirect: '/login' }, //默认进入登录界面，退出后也会回到登录页
     {
       path: '/manager',
       component: () => import('@/views/Manager.vue'),
@@ -27,7 +28,7 @@ const router = createRouter({
       path: '/front',
       component: () => import('@/views/Front.vue'),
       children: [
-        { path: 'home', component: () => import('@/views/front/Home.vue') },
+        { path: 'home', redirect: '/front/exam' }, // 默认为在线考试
         { path: 'person', component: () => import('@/views/front/Person.vue') },
         { path: 'exam', component: () => import('@/views/front/Exam.vue') },
         { path: 'testPaper', component: () => import('@/views/front/TestPaper.vue') },

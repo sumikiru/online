@@ -67,9 +67,7 @@ const data = reactive({
 let time;
 
 const loadTestPaper = () => {
-  console.log(router.currentRoute.value.query);
   data.testPaperId = router.currentRoute.value.query.id;
-  console.log(data.testPaperId); //异常：总为undefined
   request.get('/testPaper/selectById/' + data.testPaperId).then((res) => {
     if (res.code === '200') {
       data.testPaperData = res.data;
@@ -80,7 +78,7 @@ const loadTestPaper = () => {
           data.hour = Math.floor(maxTime / 3600);
           data.minutes = Math.floor(remain / 60);
           data.seconds = Math.floor(remain % 60);
-          maxTime--;
+          data.testPaperData.maxTime--;
         } else {
           ElMessage.error('时间到');
           submitPaper();
@@ -93,7 +91,7 @@ const loadTestPaper = () => {
 };
 const submitPaper = () => {
   clearInterval(time);
-  //提交试卷
+  // 提交试卷
   request.post('/score/add', data.testPaperData).then((res) => {
     if (res.code === '200') {
       ElMessage.success('提交成功');
