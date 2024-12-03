@@ -7,10 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.*;
 import com.example.exception.CustomException;
-import com.example.mapper.CourseMapper;
-import com.example.mapper.QuestionMapper;
-import com.example.mapper.TeacherMapper;
-import com.example.mapper.TestPaperMapper;
+import com.example.mapper.*;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -39,7 +36,8 @@ public class TestPaperService {
     private CourseMapper courseMapper;
     @Resource
     private TeacherMapper teacherMapper;
-
+    @Resource
+    private ScoreMapper scoreMapper;
     public void add(TestPaper testPaper) throws ParseException {
         // 先要检验前台传过来的数据
         check(testPaper);
@@ -184,4 +182,16 @@ public class TestPaperService {
         return PageInfo.of(list);
     }
 
+
+    public void checkTestPaper(Integer id) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        Score score = new Score();
+        score.setPaperId(id);
+        score.setStudentId(currentUser.getId());
+        List<Score> scores = scoreMapper.selectAll(score);
+        if (CollectionUtil.isNotEmpty(scores)) {
+            throw  new CustomException("-1","该门考试已经提交试卷，入口已关闭");
+        }
+        return ;
+    }
 }

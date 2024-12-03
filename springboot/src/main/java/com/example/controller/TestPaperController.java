@@ -65,6 +65,12 @@ public class TestPaperController {
         return Result.success(testPaper);
     }
 
+    @GetMapping("/check/{id}")
+    public Result check(@PathVariable Integer id) {
+        testPaperService.checkTestPaper(id);
+        return Result.success();
+    }
+
     /**
      * 查询所有
      */
