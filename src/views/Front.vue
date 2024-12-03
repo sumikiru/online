@@ -47,6 +47,7 @@
 import router from '@/router/index.js';
 import { reactive } from 'vue';
 import request from '@/utils/request.js';
+import { ArrowDown, Bell } from '@element-plus/icons-vue';
 
 const data = reactive({
   user: JSON.parse(localStorage.getItem('xm-user') || '{}'),

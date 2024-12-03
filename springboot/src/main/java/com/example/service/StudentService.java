@@ -38,7 +38,7 @@ public class StudentService {
             student.setName(student.getUsername());
         }
         student.setRole(RoleEnum.STUDENT.name());
-
+        student.setStatus("待审核");
         studentMapper.insert(student);
     }
 

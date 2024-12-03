@@ -68,7 +68,7 @@
                 role = #{role},
             </if>
             <if test="status != null">
-                role = #{status},
+                status = #{status},
             </if>
         </set>
         where id = #{id}

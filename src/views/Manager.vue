@@ -75,6 +75,7 @@
 import { reactive } from 'vue';
 import router from '@/router/index.js';
 import { ElMessage } from 'element-plus';
+import { ArrowDown, HomeFilled } from '@element-plus/icons-vue';
 
 const data = reactive({
   user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
