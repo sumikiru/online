@@ -1,5 +1,7 @@
 package com.example.entity;
 
+import java.util.List;
+
 public class Score {
     private  Integer id;
 
@@ -24,6 +26,8 @@ public class Score {
     private String teacherName;
 
     private String studentName;
+
+    private List<Question> questions;
 
     public Integer getId() {
         return id;
@@ -119,5 +123,13 @@ public class Score {
 
     public void setStudentName(String studentName) {
         this.studentName = studentName;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 }

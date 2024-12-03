@@ -1,9 +1,11 @@
 package com.example.service;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.*;
+import com.example.mapper.QuestionMapper;
 import com.example.mapper.ScoreMapper;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
@@ -12,6 +14,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,7 +25,8 @@ public class ScoreService {
 
     @Resource
     private ScoreMapper scoreMapper;
-
+    @Resource
+    private QuestionMapper questionMapper;
     public void add(TestPaper testPaper) {
 
         List<Answer> list = new ArrayList<>();
@@ -67,7 +71,26 @@ public class ScoreService {
     }
 
     public Score selectById(Integer id) {
-        return scoreMapper.selectById(id);
+        List<Score> scores = scoreMapper.selectAll(new Score());
+        Score score = scores.stream().filter(x -> x.getId().equals(id)).findFirst().get();
+        String answer = score.getAnswer();
+        List<Answer> list = JSONUtil.toList(answer, Answer.class);
+        List<Question> questions = new ArrayList<>();
+        for (Answer ans : list) {
+            Question question = questionMapper.selectById(ans.getQuestionId());
+            if (ObjectUtil.isNotEmpty(question)) {
+                if ("多选题".equals(ans.getTypeName())) {
+                    String newAnswer = ans.getNewAnswer(); // A,B,C
+                    List<String> checkList = Arrays.asList(newAnswer.split(","));
+                    question.setCheckList(checkList);
+                } else {
+                    question.setNewAnswer(ans.getNewAnswer());
+                }
+                questions.add(question);
+            }
+        }
+        score.setQuestions(questions);
+        return score;
     }
 
     public List<Score> selectAll(Score score) {

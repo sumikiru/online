@@ -15,7 +15,7 @@
         <el-table-column prop="score" label="分数" show-overflow-tooltip/>
         <el-table-column label="操作" width="200" fixed="right">
           <template v-slot="scope">
-            <el-button type="primary" @click="">查看试卷</el-button>
+            <el-button type="primary" @click="navTo('/front/testPaperView?=id' + scope.row.id)">查看试卷</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -53,5 +53,10 @@ const load = () => {
     }
   })
 }
+
+const navTo = (url) => {
+  location.href = url
+}
+
 load()
 </script>
