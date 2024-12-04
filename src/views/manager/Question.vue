@@ -95,7 +95,7 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="data.formVisible = false">取 消</el-button>
+          <el-button @click="(data.formVisible = false)">取 消</el-button>
           <el-button type="primary" @click="save">确 定</el-button>
         </span>
       </template>

@@ -18,59 +18,51 @@
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
-import request from "@/utils/request.js";
-import {ElMessage} from "element-plus";
-import router from "@/router/index.js";
+import { reactive, ref } from 'vue';
+import request from '@/utils/request.js';
+import { ElMessage } from 'element-plus';
+import router from '@/router/index.js';
 
-const formRef = ref()
+const formRef = ref();
 
 const validatePass = (rule, value, callback) => {
   if (!value) {
-    callback(new Error('请确认密码'))
+    callback(new Error('请确认密码'));
   } else {
     if (value !== data.user.newPassword) {
-      callback(new Error("确认密码跟原密码不一致!"))
+      callback(new Error('确认密码跟原密码不一致!'));
     }
-    callback()
+    callback();
   }
-}
+};
 const data = reactive({
   user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
   rules: {
-    password: [
-      { required: true, message: '请输入原密码', trigger: 'blur' },
-    ],
-    newPassword: [
-      { required: true, message: '请输入新密码', trigger: 'blur' },
-    ],
-    confirmPassword: [
-      { validator: validatePass, trigger: 'blur' }
-    ]
-  }
-})
+    password: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
+    newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
+    confirmPassword: [{ validator: validatePass, trigger: 'blur' }],
+  },
+});
 
 const updatePassword = () => {
-  formRef.value.validate(valid => {
+  formRef.value.validate((valid) => {
     if (valid) {
-      request.put('/updatePassword', data.user).then(res => {
+      request.put('/updatePassword', data.user).then((res) => {
         if (res.code === '200') {
-          ElMessage.success('保存成功')
-          logout()
+          ElMessage.success('保存成功');
+          logout();
         } else {
-          ElMessage.error(res.msg)
+          ElMessage.error(res.msg);
         }
-      })
+      });
     }
-  })
-}
+  });
+};
 
 const logout = () => {
-  localStorage.removeItem('xm-user')
-  router.push('/login')
-}
+  localStorage.removeItem('xm-user');
+  router.push('/login');
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

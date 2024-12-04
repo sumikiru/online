@@ -39,7 +39,7 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="data.formVisible = false">取 消</el-button>
+          <el-button @click="(data.formVisible = false)">取 消</el-button>
           <el-button type="primary" @click="save">确 定</el-button>
         </span>
       </template>
@@ -48,12 +48,10 @@
 </template>
 
 <script setup>
-
-import {reactive} from "vue";
-import request from "@/utils/request.js";
-import {ElMessage, ElMessageBox} from "element-plus";
-import {Delete, Edit} from "@element-plus/icons-vue";
-
+import { reactive } from 'vue';
+import request from '@/utils/request.js';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { Delete, Edit } from '@element-plus/icons-vue';
 
 const data = reactive({
   formVisible: false,
@@ -63,97 +61,103 @@ const data = reactive({
   pageSize: 10,
   total: 0,
   title: null,
-  ids: []
-})
+  ids: [],
+});
 
 const load = () => {
-  request.get('/notice/selectPage', {
-    params: {
-      pageNum: data.pageNum,
-      pageSize: data.pageSize,
-      title: data.title
-    }
-  }).then(res => {
-    if (res.code === '200') {
-      data.tableData = res.data?.list || []
-      data.total = res.data?.total
-    }
-  })
-}
+  request
+    .get('/notice/selectPage', {
+      params: {
+        pageNum: data.pageNum,
+        pageSize: data.pageSize,
+        title: data.title,
+      },
+    })
+    .then((res) => {
+      if (res.code === '200') {
+        data.tableData = res.data?.list || [];
+        data.total = res.data?.total;
+      }
+    });
+};
 const handleAdd = () => {
-  data.form = {}
-  data.formVisible = true
-}
+  data.form = {};
+  data.formVisible = true;
+};
 const handleEdit = (row) => {
-  data.form = JSON.parse(JSON.stringify(row))
-  data.formVisible = true
-}
+  data.form = JSON.parse(JSON.stringify(row));
+  data.formVisible = true;
+};
 const add = () => {
-  request.post('/notice/add', data.form).then(res => {
+  request.post('/notice/add', data.form).then((res) => {
     if (res.code === '200') {
-      ElMessage.success('操作成功')
-      data.formVisible = false
-      load()
+      ElMessage.success('操作成功');
+      data.formVisible = false;
+      load();
     } else {
-      ElMessage.error(res.msg)
+      ElMessage.error(res.msg);
     }
-  })
-}
+  });
+};
 
 const update = () => {
-  request.put('/notice/update', data.form).then(res => {
+  request.put('/notice/update', data.form).then((res) => {
     if (res.code === '200') {
-      ElMessage.success('操作成功')
-      data.formVisible = false
-      load()
+      ElMessage.success('操作成功');
+      data.formVisible = false;
+      load();
     }
-  })
-}
+  });
+};
 
 const save = () => {
-  data.form.id ? update() : add()
-}
+  data.form.id ? update() : add();
+};
 
 const del = (id) => {
-  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' }).then(res => {
-    request.delete('/notice/delete/' + id).then(res => {
-      if (res.code === '200') {
-        ElMessage.success("删除成功")
-        load()
-      } else {
-        ElMessage.error(res.msg)
-      }
+  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' })
+    .then((res) => {
+      request.delete('/notice/delete/' + id).then((res) => {
+        if (res.code === '200') {
+          ElMessage.success('删除成功');
+          load();
+        } else {
+          ElMessage.error(res.msg);
+        }
+      });
     })
-  }).catch(err => {
-    console.error(err)
-  })
-}
+    .catch((err) => {
+      console.error(err);
+    });
+};
 const delBatch = () => {
   if (!data.ids.length) {
-    ElMessage.warning("请选择数据")
-    return
+    ElMessage.warning('请选择数据');
+    return;
   }
-  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' }).then(res => {
-    request.delete("/notice/delete/batch", {data: data.ids}).then(res => {
-      if (res.code === '200') {
-        ElMessage.success('操作成功')
-        load()
-      } else {
-        ElMessage.error(res.msg)
-      }
+  ElMessageBox.confirm('删除后数据无法恢复，您确定删除吗？', '删除确认', { type: 'warning' })
+    .then((res) => {
+      request.delete('/notice/delete/batch', { data: data.ids }).then((res) => {
+        if (res.code === '200') {
+          ElMessage.success('操作成功');
+          load();
+        } else {
+          ElMessage.error(res.msg);
+        }
+      });
     })
-  }).catch(err => {
-    console.error(err)
-  })
-}
+    .catch((err) => {
+      console.error(err);
+    });
+};
 const handleSelectionChange = (rows) => {
-  data.ids = rows.map(v => v.id)
-}
+  data.ids = rows.map((v) => v.id);
+};
 
 const reset = () => {
-  data.title = null
-  load()
-}
+  data.title = null;
+  load();
+};
 
-load()
+load();
 </script>

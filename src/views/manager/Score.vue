@@ -10,17 +10,17 @@
 
     <div class="card" style="margin-bottom: 5px">
       <el-table stripe :data="data.tableData">
-        <el-table-column prop="name" label="试卷名称" show-overflow-tooltip/>
-        <el-table-column prop="courseName" label="课程名称" show-overflow-tooltip/>
-        <el-table-column prop="teacherName" label="授课教师" show-overflow-tooltip v-if="data.user.role === 'ADMIN'"/>
-        <el-table-column prop="studentName" label="学生姓名" show-overflow-tooltip/>
+        <el-table-column prop="name" label="试卷名称" show-overflow-tooltip />
+        <el-table-column prop="courseName" label="课程名称" show-overflow-tooltip />
+        <el-table-column prop="teacherName" label="授课教师" show-overflow-tooltip v-if="data.user.role === 'ADMIN'" />
+        <el-table-column prop="studentName" label="学生姓名" show-overflow-tooltip />
         <el-table-column prop="status" label="试卷状态" show-overflow-tooltip>
           <template v-slot="scope">
             <el-tag v-if="scope.row.status === '已阅卷'" type="success">{{ scope.row.status }}</el-tag>
             <el-tag v-if="scope.row.status === '待阅卷'" type="danger">{{ scope.row.status }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="score" label="分数" show-overflow-tooltip/>
+        <el-table-column prop="score" label="分数" show-overflow-tooltip />
         <el-table-column label="操作" width="100" fixed="right">
           <template v-slot="scope">
             <el-button type="primary" @click="handleEdit(scope.row)">阅卷</el-button>
@@ -33,10 +33,9 @@
     </div>
 
     <el-dialog title="阅卷打分" v-model="data.formVisible" width="40%" destroy-on-close>
-
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="data.formVisible = false">取 消</el-button>
+          <el-button @click="(data.formVisible = false)">取 消</el-button>
           <el-button type="primary" @click="update">确 定</el-button>
         </span>
       </template>
@@ -45,12 +44,10 @@
 </template>
 
 <script setup>
-
-import {reactive} from "vue";
-import request from "@/utils/request.js";
-import {ElMessage, ElMessageBox} from "element-plus";
-import {Delete, Edit} from "@element-plus/icons-vue";
-
+import { reactive } from 'vue';
+import request from '@/utils/request.js';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { Delete, Edit } from '@element-plus/icons-vue';
 
 const data = reactive({
   user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
@@ -62,48 +59,50 @@ const data = reactive({
   total: 0,
   name: null,
   courseName: null,
-  status: null
-})
+  status: null,
+});
 
 const load = () => {
-  request.get('/score/selectPage', {
-    params: {
-      pageNum: data.pageNum,
-      pageSize: data.pageSize,
-      name: data.name,
-      courseName: data.courseName,
-      status: data.status
-    }
-  }).then(res => {
-    if (res.code === '200') {
-      data.tableData = res.data?.list || []
-      data.total = res.data?.total
-    } else {
-      ElMessage.error(res.msg)
-    }
-  })
-}
+  request
+    .get('/score/selectPage', {
+      params: {
+        pageNum: data.pageNum,
+        pageSize: data.pageSize,
+        name: data.name,
+        courseName: data.courseName,
+        status: data.status,
+      },
+    })
+    .then((res) => {
+      if (res.code === '200') {
+        data.tableData = res.data?.list || [];
+        data.total = res.data?.total;
+      } else {
+        ElMessage.error(res.msg);
+      }
+    });
+};
 const handleEdit = (row) => {
-  data.form = JSON.parse(JSON.stringify(row))
-  data.formVisible = true
-}
+  data.form = JSON.parse(JSON.stringify(row));
+  data.formVisible = true;
+};
 
 const update = () => {
-  request.put('/score/update', data.form).then(res => {
+  request.put('/score/update', data.form).then((res) => {
     if (res.code === '200') {
-      ElMessage.success('操作成功')
-      data.formVisible = false
-      load()
+      ElMessage.success('操作成功');
+      data.formVisible = false;
+      load();
     }
-  })
-}
+  });
+};
 
 const reset = () => {
-  data.name = null
-  data.courseName = null
-  data.status = null
-  load()
-}
+  data.name = null;
+  data.courseName = null;
+  data.status = null;
+  load();
+};
 
-load()
+load();
 </script>

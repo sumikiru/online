@@ -49,7 +49,7 @@
             <el-menu-item index="/manager/question">题库信息</el-menu-item>
             <el-menu-item index="/manager/testPaper">试卷信息</el-menu-item>
             <el-menu-item index="/manager/score">
-              {{ data.user.role === 'ADMIN' ? "成绩管理" : "阅卷打分"}}
+              {{ data.user.role === 'ADMIN' ? '成绩管理' : '阅卷打分' }}
             </el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="2" v-if="data.user.role === 'ADMIN'">

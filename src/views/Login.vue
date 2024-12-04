@@ -19,60 +19,53 @@
         <el-form-item>
           <el-button size="large" type="primary" style="width: 100%" @click="login">登 录</el-button>
         </el-form-item>
-        <div style="text-align: right">
-          还没有账号？请 <a href="/register">注册</a>
-        </div>
+        <div style="text-align: right">还没有账号？请 <a href="/register">注册</a></div>
       </el-form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
-import { User, Lock } from "@element-plus/icons-vue";
-import request from "@/utils/request.js";
-import {ElMessage} from "element-plus";
-import router from "@/router/index.js";
+import { reactive, ref } from 'vue';
+import { User, Lock } from '@element-plus/icons-vue';
+import request from '@/utils/request.js';
+import { ElMessage } from 'element-plus';
+import router from '@/router/index.js';
 
 const data = reactive({
   form: {},
   rules: {
-    username: [
-      { required: true, message: '请输入账号', trigger: 'blur' }
-    ],
-    password: [
-      { required: true, message: '请输入密码', trigger: 'blur' }
-    ],
-    role: [
-      { required: true, message: '请选择身份', trigger: 'change' }
-    ]
-  }
-})
+    username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+    password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+    role: [{ required: true, message: '请选择身份', trigger: 'change' }],
+  },
+});
 
-const formRef = ref()
+const formRef = ref();
 
 const login = () => {
-  formRef.value.validate(valid => {
-    if (valid) { // 表示表单校验通过
-      request.post('/login', data.form).then(res => {
+  formRef.value.validate((valid) => {
+    if (valid) {
+      // 表示表单校验通过
+      request.post('/login', data.form).then((res) => {
         if (res.code === '200') {
-          ElMessage.success('登录成功')
+          ElMessage.success('登录成功');
           // 存储用户信息到浏览器的缓存
-          localStorage.setItem('xm-user', JSON.stringify(res.data))
+          localStorage.setItem('xm-user', JSON.stringify(res.data));
           setTimeout(() => {
             if ('STUDENT' === res.data.role) {
-              location.href = '/front/home'
+              location.href = '/front/home';
             } else {
-              location.href = '/manager/home'
+              location.href = '/manager/home';
             }
-          }, 500)
+          }, 500);
         } else {
-          ElMessage.error(res.msg)
+          ElMessage.error(res.msg);
         }
-      })
+      });
     }
-  })
-}
+  });
+};
 </script>
 
 <style scoped>

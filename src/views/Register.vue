@@ -21,67 +21,58 @@
         <el-form-item>
           <el-button size="large" type="primary" style="width: 100%" @click="register">注 册</el-button>
         </el-form-item>
-        <div style="text-align: right">
-          已有账号？请 <a href="/login">登录</a>
-        </div>
+        <div style="text-align: right">已有账号？请 <a href="/login">登录</a></div>
       </el-form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
-import { User, Lock } from "@element-plus/icons-vue";
-import request from "@/utils/request.js";
-import {ElMessage} from "element-plus";
-import router from "@/router/index.js";
+import { reactive, ref } from 'vue';
+import { User, Lock } from '@element-plus/icons-vue';
+import request from '@/utils/request.js';
+import { ElMessage } from 'element-plus';
+import router from '@/router/index.js';
 
 const validatePass = (rule, value, callback) => {
   if (!value) {
-    callback(new Error('请确认密码'))
+    callback(new Error('请确认密码'));
   } else {
     if (value !== data.form.password) {
-      callback(new Error("确认密码跟原密码不一致!"))
+      callback(new Error('确认密码跟原密码不一致!'));
     }
-    callback()
+    callback();
   }
-}
+};
 const data = reactive({
-  form: { },
+  form: {},
   rules: {
-    username: [
-      { required: true, message: '请输入账号', trigger: 'blur' }
-    ],
-    password: [
-      { required: true, message: '请输入密码', trigger: 'blur' }
-    ],
-    roles: [
-      { required: true, message: '请选择身份', trigger: 'blur' }
-      ],
-    confirmPassword: [
-        { validator: validatePass, trigger: 'blur' }
-    ]
-  }
-})
+    username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+    password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+    roles: [{ required: true, message: '请选择身份', trigger: 'blur' }],
+    confirmPassword: [{ validator: validatePass, trigger: 'blur' }],
+  },
+});
 
-const formRef = ref()
+const formRef = ref();
 
 const register = () => {
-  formRef.value.validate(valid => {
-    if (valid) { // 表示表单校验通过
-      request.post('/register', data.form).then(res => {
+  formRef.value.validate((valid) => {
+    if (valid) {
+      // 表示表单校验通过
+      request.post('/register', data.form).then((res) => {
         if (res.code === '200') {
-          ElMessage.success('注册成功')
+          ElMessage.success('注册成功');
           setTimeout(() => {
-            router.push('/login')
-          }, 500)
+            router.push('/login');
+          }, 500);
         } else {
-          ElMessage.error(res.msg)
+          ElMessage.error(res.msg);
         }
-      })
+      });
     }
-  })
-}
+  });
+};
 </script>
 
 <style scoped>

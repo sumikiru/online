@@ -39,17 +39,16 @@
         </div>
         <!--   typeId === 4：填空题     -->
         <div v-if="item.typeId === 4">
-          <el-input  disabled style="width: 50%" v-model="item.newAnswer" placeholder="请输入您的答案"></el-input>
+          <el-input disabled style="width: 50%" v-model="item.newAnswer" placeholder="请输入您的答案"></el-input>
           <div style="margin-top: 10px">标准答案：{{ item.answer }}</div>
         </div>
         <!--   typeId === 5：简答题     -->
         <div v-if="item.typeId === 5">
-          <el-input  disabled type="textarea" :rows="8" v-model="item.newAnswer" placeholder="请输入您的答案"></el-input>
+          <el-input disabled type="textarea" :rows="8" v-model="item.newAnswer" placeholder="请输入您的答案"></el-input>
           <div style="margin: 10px 0">标准答案：</div>
           <el-input disabled type="textarea" :rows="8" v-model="item.answer" placeholder="请输入您的答案"></el-input>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -69,7 +68,7 @@ const loadTestPaper = () => {
   data.testPaperId = router.currentRoute.value.query.id;
   request.get('/score/selectById/' + data.scoreId).then((res) => {
     if (res.code === '200') {
-      data.testPaperData = res.data
+      data.testPaperData = res.data;
     } else {
       ElMessage.error(res.msg);
     }
