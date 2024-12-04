@@ -3,7 +3,7 @@
     <el-form ref="user" :model="data.user" label-width="70px" style="padding: 20px">
       <el-form-item prop="avatar" label="头像">
         <el-upload :action="baseUrl + '/files/upload'" :on-success="handleFileUpload" :show-file-list="false" class="avatar-uploader">
-          <img v-if="data.user.avatar" :src="data.user.avatar" class="avatar" />
+          <img v-if="data.user.avatar" :src="data.user.avatar" class="avatar" alt="" />
           <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
         </el-upload>
       </el-form-item>
@@ -30,6 +30,7 @@
 import { reactive } from 'vue';
 import request from '@/utils/request.js';
 import { ElMessage } from 'element-plus';
+import { Plus } from '@element-plus/icons-vue';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 

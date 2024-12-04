@@ -5,7 +5,7 @@
     </div>
     <el-form ref="user" :model="data.user" label-width="60px" style="padding: 20px">
       <div style="text-align: center; margin-bottom: 20px">
-        <el-upload :action="baseUrl + '/files/upload'" :on-success="handleFileUpload" :show-file-list="false" class="avatar-uploader">
+        <el-upload :action="baseUrl + '/files/upload'" :on-success="handleFileUpload" :before-upload="beforeAvatarUpload" :show-file-list="false" class="avatar-uploader">
           <img v-if="data.user.avatar" :src="data.user.avatar" class="avatar" alt="" />
           <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
         </el-upload>
@@ -80,8 +80,51 @@ const data = reactive({
   },
 });
 
+// 修改上传图片尺寸，使得默认取最终间部分以控制比例
+const beforeAvatarUpload = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 设置裁剪区域和输出大小
+        const size = 800;
+        const cropSize = Math.min(img.width, img.height); // 取较小边
+        const startX = (img.width - cropSize) / 2;
+        const startY = (img.height - cropSize) / 2;
+
+        // 裁剪并绘制到 canvas
+        canvas.width = size;
+        canvas.height = size;
+        ctx.drawImage(img, startX, startY, cropSize, cropSize, 0, 0, size, size);
+
+        // 转换为 Blob 并替换原文件上传
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const newFile = new File([blob], file.name, { type: 'image/jpeg' });
+              resolve(newFile);
+            } else {
+              reject(new Error('Image processing failed'));
+            }
+          },
+          'image/jpeg',
+          1,
+        );
+      };
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
 const handleFileUpload = (res) => {
   data.user.avatar = res.data;
+  ElMessage.success('图片已成功上传，请点击保存');
 };
 
 const emit = defineEmits(['updateUser']);
