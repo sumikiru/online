@@ -1,12 +1,7 @@
 <template>
   <div>
     <div class="card" style="margin-bottom: 5px">
-      <el-input
-        v-model="data.name"
-        prefix-icon="Search"
-        style="width: 240px; margin-right: 10px"
-        placeholder="请输入课程名称查询"
-      ></el-input>
+      <el-input v-model="data.name" prefix-icon="Search" style="width: 240px; margin-right: 10px" placeholder="请输入课程名称查询"></el-input>
       <el-button type="info" plain @click="load">查询</el-button>
       <el-button type="warning" plain style="margin: 0 10px" @click="reset">重置</el-button>
     </div>
@@ -20,13 +15,7 @@
         <el-table-column type="selection" width="55" />
         <el-table-column prop="img" label="课程封面">
           <template v-slot="scope">
-            <el-image
-              style="width: 60px; height: 40px; border-radius: 5px; display: block"
-              v-if="scope.row.img"
-              :src="scope.row.img"
-              :preview-src-list="[scope.row.img]"
-              preview-teleported
-            ></el-image>
+            <el-image style="width: 60px; height: 40px; border-radius: 5px; display: block" v-if="scope.row.img" :src="scope.row.img" :preview-src-list="[scope.row.img]" preview-teleported></el-image>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="课程名称" />
@@ -34,33 +23,20 @@
         <el-table-column prop="score" label="课程学分" />
         <el-table-column label="操作" width="100" fixed="right">
           <template v-slot="scope">
-            <el-button
-              v-if="data.user.role === 'TEACHER'"
-              type="primary"
-              circle
-              :icon="Edit"
-              @click="handleEdit(scope.row)"
-            ></el-button>
+            <el-button v-if="data.user.role === 'TEACHER'" type="primary" circle :icon="Edit" @click="handleEdit(scope.row)"></el-button>
             <el-button type="danger" circle :icon="Delete" @click="del(scope.row.id)"></el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="card" v-if="data.total">
-      <el-pagination
-        @current-change="load"
-        background
-        layout="prev, pager, next"
-        :page-size="data.pageSize"
-        v-model:current-page="data.pageNum"
-        :total="data.total"
-      />
+      <el-pagination @current-change="load" background layout="prev, pager, next" :page-size="data.pageSize" v-model:current-page="data.pageNum" :total="data.total" />
     </div>
 
     <el-dialog title="课程信息" v-model="data.formVisible" width="40%" destroy-on-close>
       <el-form ref="form" :model="data.form" label-width="70px" style="padding: 20px">
         <el-form-item prop="avatar" label="课程封面">
-          <el-upload :action="baseUrl + '/files/upload'" :on-success="handleFileUpload" list-type="picture">
+          <el-upload :action="baseUrl + '/files/upload'" :before-upload="beforeAvatarUpload" :on-success="handleFileUpload" list-type="picture">
             <el-button type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
@@ -197,8 +173,81 @@ const reset = () => {
   load();
 };
 
+// 修改上传图片尺寸，使得默认取最终间部分以控制比例
+const beforeAvatarUpload = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 设置裁剪区域和输出大小：课程封面比例为 82:45，并保证图片为正中心部分
+        const outputWidth = 800; // 输出宽度
+        const outputHeight = Math.round((outputWidth * 45) / 82); // 按比例计算输出高度
+
+        // 计算裁剪区域
+        const imageAspectRatio = img.width / img.height; // 图片宽高比
+        const targetAspectRatio = 82 / 45; // 目标宽高比
+
+        let cropWidth, cropHeight, startX, startY;
+
+        if (imageAspectRatio > targetAspectRatio) {
+          // 图片宽度较大，以高度为基准裁剪
+          cropHeight = img.height;
+          cropWidth = Math.round(cropHeight * targetAspectRatio);
+          startX = (img.width - cropWidth) / 2;
+          startY = 0;
+        } else {
+          // 图片高度较大，以宽度为基准裁剪
+          cropWidth = img.width;
+          cropHeight = Math.round(cropWidth / targetAspectRatio);
+          startX = 0;
+          startY = (img.height - cropHeight) / 2;
+        }
+
+        // 设置 canvas 的输出尺寸
+        canvas.width = outputWidth;
+        canvas.height = outputHeight;
+
+        // 裁剪并绘制到 canvas
+        ctx.drawImage(
+          img,
+          startX,
+          startY,
+          cropWidth,
+          cropHeight, // 裁剪区域
+          0,
+          0,
+          outputWidth,
+          outputHeight, // 绘制到 canvas 的区域
+        );
+
+        // 转换为 Blob 并替换原文件上传
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const newFile = new File([blob], file.name, { type: 'image/jpeg' });
+              resolve(newFile);
+            } else {
+              reject(new Error('Image processing failed'));
+            }
+          },
+          'image/jpeg',
+          1,
+        );
+      };
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
 const handleFileUpload = (res) => {
   data.form.img = res.data;
+  ElMessage.success('图片已成功上传，请点击保存');
 };
 
 load();
