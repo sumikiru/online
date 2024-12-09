@@ -28,6 +28,7 @@ public class Score {
     private String studentName;
 
     private List<Question> questions;
+    private List<Answer> answerData;
 
     public Integer getId() {
         return id;
@@ -127,6 +128,14 @@ public class Score {
 
     public List<Question> getQuestions() {
         return questions;
+    }
+
+    public List<Answer> getAnswerData() {
+        return answerData;
+    }
+
+    public void setAnswerData(List<Answer> answerData) {
+        this.answerData = answerData;
     }
 
     public void setQuestions(List<Question> questions) {

@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.common.Result;
+import com.example.entity.Answer;
 import com.example.entity.Score;
 import com.example.entity.TestPaper;
 import com.example.service.ScoreService;
@@ -64,7 +65,11 @@ public class ScoreController {
         Score score = scoreService.selectById(id);
         return Result.success(score);
     }
-
+    @GetMapping("/selectAnswer/{id}")
+    public Result selectAnswer(@PathVariable Integer id) {
+        List<Answer> list = scoreService.selectAnswer(id);
+        return Result.success(list);
+    }
     /**
      * 查询所有
      */

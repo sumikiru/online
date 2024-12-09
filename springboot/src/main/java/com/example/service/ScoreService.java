@@ -58,6 +58,16 @@ public class ScoreService {
     }
 
     public void updateById(Score score) {
+        List<Answer> answerData = score.getAnswerData();
+        int total = 0;
+        for (Answer answer : answerData) {
+            if (ObjectUtil.isNotEmpty(answer.getResult())) {
+                total += answer.getResult();
+            }
+        }
+        score.setScore(total);
+        score.setAnswer(JSONUtil.toJsonStr(answerData));
+        score.setStatus("已阅卷");
         scoreMapper.updateById(score);
     }
 
@@ -111,4 +121,41 @@ public class ScoreService {
         return PageInfo.of(list);
     }
 
+    public List<Answer> selectAnswer(Integer id) {
+        Score score = scoreMapper.selectById(id);
+        List<Answer> list = JSONUtil.toList(score.getAnswer(), Answer.class);
+        // 客观题自动阅卷功能
+        for (Answer answer : list) {
+            Question question = questionMapper.selectById(answer.getQuestionId());
+            answer.setQuestionName(question.getName());
+            // 客观题自动打分
+            if (!"简答题".equals(answer.getTypeName())) {
+                if (!"多选题".equals(answer.getTypeName())) {
+                    if (answer.getAnswer().equals(answer.getNewAnswer())) {
+                        answer.setResult(answer.getScore());
+                    } else {
+                        answer.setResult(0);
+                    }
+                } else {
+                    // 多选题 只要选项都对就行 顺序没有关系：  A,B,C 和 B,A,C 是一样的
+                    List<String> standardList = Arrays.asList(answer.getAnswer().split(",")); // [A, B, C]
+                    List<String> studentList = Arrays.asList(answer.getNewAnswer().split(",")); // [B, A, C]
+                    for (String s : standardList) {
+                        if (!studentList.contains(s)) {
+                            answer.setResult(0);
+                            break;
+                        }
+                    }
+                    if (ObjectUtil.isEmpty(answer.getResult())) {
+                        if (studentList.size() == standardList.size()) {
+                            answer.setResult(answer.getScore());
+                        } else {
+                            answer.setResult(0);
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
 }

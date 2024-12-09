@@ -21,9 +21,9 @@
           </template>
         </el-table-column>
         <el-table-column prop="score" label="分数" show-overflow-tooltip />
-        <el-table-column label="操作" width="100" fixed="right">
+        <el-table-column label="操作" width="100" fixed="right" v-if="data.user.role === 'TEACHER'">
           <template v-slot="scope">
-            <el-button type="primary" @click="handleEdit(scope.row)">阅卷</el-button>
+            <el-button :disabled="scope.row.status === '已阅卷'" type="primary" @click="handleEdit(scope.row)">阅卷</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -32,11 +32,34 @@
       <el-pagination @current-change="load" background layout="prev, pager, next" :page-size="data.pageSize" v-model:current-page="data.pageNum" :total="data.total" />
     </div>
 
-    <el-dialog title="阅卷打分" v-model="data.formVisible" width="40%" destroy-on-close>
+    <el-dialog title="答案信息" v-model="data.formVisible" width="85%" destroy-on-close>
+      <el-table stripe :data="data.answerData">
+        <el-table-column prop="questionName" label="题目" show-overflow-tooltip />
+        <el-table-column prop="score" label="分数" show-overflow-tooltip width="60" />
+        <el-table-column prop="typeName" label="题型" show-overflow-tooltip width="80" />
+        <el-table-column prop="answer" label="标准答案" show-overflow-tooltip width="350">
+          <template v-slot="scope">
+            <el-input v-if="scope.row.typeName === '简答题'" type="textarea" :rows="8" v-model="scope.row.answer" disabled></el-input>
+            <span v-else>{{ scope.row.answer }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="newAnswer" label="学生答案" show-overflow-tooltip width="350">
+          <template v-slot="scope">
+            <el-input v-if="scope.row.typeName === '简答题'" type="textarea" :rows="8" v-model="scope.row.newAnswer" disabled></el-input>
+            <span v-else>{{ scope.row.newAnswer }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="result" label="得分" show-overflow-tooltip width="150">
+          <template v-slot="scope">
+            <el-input v-if="scope.row.typeName === '简答题'" v-model="scope.row.result" placeholder="输入分数"></el-input>
+            <span v-else>{{ scope.row.result }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="(data.formVisible = false)">取 消</el-button>
-          <el-button type="primary" @click="update">确 定</el-button>
+          <el-button type="primary" @click="update">提 交</el-button>
         </span>
       </template>
     </el-dialog>
@@ -52,7 +75,6 @@ import { Delete, Edit } from '@element-plus/icons-vue';
 const data = reactive({
   user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
   formVisible: false,
-  form: {},
   tableData: [],
   pageNum: 1,
   pageSize: 10,
@@ -60,6 +82,8 @@ const data = reactive({
   name: null,
   courseName: null,
   status: null,
+  answerData: [],
+  form: {},
 });
 
 const load = () => {
@@ -84,10 +108,18 @@ const load = () => {
 };
 const handleEdit = (row) => {
   data.form = JSON.parse(JSON.stringify(row));
-  data.formVisible = true;
+  request.get('/score/selectAnswer/' + row.id).then((res) => {
+    if (res.code === '200') {
+      data.answerData = res.data;
+      data.formVisible = true;
+    } else {
+      ElMessage.error(res.msg);
+    }
+  });
 };
 
 const update = () => {
+  data.form.answerData = data.answerData;
   request.put('/score/update', data.form).then((res) => {
     if (res.code === '200') {
       ElMessage.success('操作成功');

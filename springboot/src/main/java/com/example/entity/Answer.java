@@ -8,9 +8,9 @@ public class Answer {
 
     private  Integer score;
 
-    private  String answer;
+    private  String answer;//标准答案
 
-    private  String newAnswer;
+    private  String newAnswer;//学生答案
 
     private  Integer result;
 
@@ -60,5 +60,9 @@ public class Answer {
 
     public void setResult(Integer result) {
         this.result = result;
+    }
+
+    public void setQuestionName(String name) {
+
     }
 }
