@@ -13,6 +13,7 @@ public class Answer {
     private  String newAnswer;//学生答案
 
     private  Integer result;
+    private  String questionName;
 
     public String getTypeName() {
         return typeName;
@@ -62,7 +63,10 @@ public class Answer {
         this.result = result;
     }
 
-    public void setQuestionName(String name) {
-
+    public String getQuestionName() {
+        return questionName;
+    }
+    public void setQuestionName(String questionName) {
+        this.questionName = questionName;
     }
 }

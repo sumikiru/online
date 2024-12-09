@@ -115,7 +115,7 @@ const data = reactive({
   form: {},
   tableData: [],
   pageNum: 1,
-  pageSize: 10,
+  pageSize: 6,
   total: 0,
   name: null,
   ids: [],

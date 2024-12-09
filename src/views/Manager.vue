@@ -3,7 +3,7 @@
     <div class="manager-header">
       <div class="manager-header-left">
         <img src="@/assets/imgs/logo.png" alt="" />
-        <div class="title">在线考试系统管理后台</div>
+        <div class="title">在线考试系统后台</div>
       </div>
       <div class="manager-header-center">
         <el-breadcrumb separator="/">
