@@ -59,10 +59,10 @@
                 name = #{name},
             </if>
             <if test="courseId != null">
-                courseId = #{courseId},
+                course_id = #{courseId},
             </if>
             <if test="typeId != null">
-                typeId = #{typeId},
+                type_id = #{typeId},
             </if>
             <if test="optionA != null">
                 option_a = #{optionA},
