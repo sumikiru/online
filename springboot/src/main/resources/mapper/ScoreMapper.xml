@@ -13,9 +13,9 @@
             <if test="name != null"> and score.name like concat('%', #{name}, '%')</if>
             <if test="studentId != null"> and score.student_id = #{studentId}</if>
             <if test="teacherId != null"> and score.teacher_id = #{teacherId}</if>
-            <if test="paperId!= null"> and score.paper_id = #{paperId}</if>
+            <if test="paperId != null"> and score.paper_id = #{paperId}</if>
             <if test="status != null"> and score.status = #{status}</if>
-            <if test="courseName != null"> and course.name = like concat('%', #{name}, '%')</if>
+            <if test="courseName != null"> and course.name = like concat('%', #{courseName}, '%')</if>
         </where>
     </select>
 
@@ -33,6 +33,7 @@
             <if test="courseId != null">course_id,</if>
             <if test="teacherId != null">teacher_id,</if>
             <if test="studentId != null">student_id,</if>
+            <if test="paperId != null">paper_id,</if>
             <if test="score != null">score,</if>
             <if test="status != null">status,</if>
             <if test="answer != null">answer,</if>
@@ -41,6 +42,7 @@
             <if test="id != null">#{id},</if>
             <if test="name != null">#{name},</if>
             <if test="courseId != null">#{courseId},</if>
+            <if test="teacherId != null">#{teacherId},</if>
             <if test="studentId != null">#{studentId},</if>
             <if test="paperId != null">#{paperId},</if>
             <if test="score != null">#{score},</if>
