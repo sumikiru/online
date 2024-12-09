@@ -51,14 +51,15 @@
         </el-table-column>
         <el-table-column prop="result" label="得分" show-overflow-tooltip width="150">
           <template v-slot="scope">
-            <el-input v-if="scope.row.typeName === '简答题'" v-model="scope.row.result" placeholder="输入分数"></el-input>
+            <!--添加@blur事件，在失去焦点时进行验证，确保result不大于score-->
+            <el-input v-if="scope.row.typeName === '简答题'" v-model="scope.row.result" placeholder="输入分数" @blur="validateScore(scope.row)"></el-input>
             <span v-else>{{ scope.row.result }}</span>
           </template>
         </el-table-column>
       </el-table>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="(data.formVisible = false)">取 消</el-button>
+          <el-button @click="data.formVisible = false">取 消</el-button>
           <el-button type="primary" @click="update">提 交</el-button>
         </span>
       </template>
@@ -116,6 +117,13 @@ const handleEdit = (row) => {
       ElMessage.error(res.msg);
     }
   });
+};
+
+const validateScore = (row) => {
+  if (row.result > row.score) {
+    ElMessage.warning('单题得分不能大于单题总分');
+    row.result = row.score;
+  }
 };
 
 const update = () => {
