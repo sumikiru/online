@@ -1,0 +1,26 @@
+server:
+  port: 9090
+  tomcat:
+    # 当文件超过tomcat的大小限制后会先于Controller触发异常，此时我们的异常处理器无法捕获异常
+    max-swallow-size: 40MB # 内嵌tomcat的最大吞吐量，设置 -1 不限制
+
+# 数据库配置
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB # 头像图片大小最多为10MB
+      max-request-size: 25MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: '123456'
+    url: jdbc:mysql://localhost:3306/online?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
+
+# 配置mybatis实体和xml映射
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/*.xml
+
+fileBaseUrl: http://localhost:${server.port}
