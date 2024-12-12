@@ -27,10 +27,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
-jsconfig.json
-package-lock.json
-package.json
-/online.iml
 /.vscode/
 vite.config.js~
 记录.md
